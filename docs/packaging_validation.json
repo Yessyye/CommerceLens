@@ -1,0 +1,26 @@
+{
+  "base_commit": "d60bbb4074199b71f5c2a272680c235f9a13e974",
+  "protected_source_files": 65,
+  "restored_configuration": [
+    ".gitignore",
+    ".env.example",
+    ".streamlit/config.toml"
+  ],
+  "excluded": [
+    ".git",
+    ".env",
+    "raw CSV",
+    "DuckDB",
+    "virtual environments",
+    "caches"
+  ],
+  "secret_pattern_findings": [],
+  "raw_data_or_environment_findings": [],
+  "packaged_apptest_cases_passed": [
+    "A",
+    "B",
+    "C"
+  ],
+  "packaged_replay_record": "docs/packaged_replay_validation.json",
+  "scan_scope": "Known credential patterns and excluded file classes; not an absolute proof of absence"
+}

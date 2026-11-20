@@ -1,16 +1,164 @@
-# CommerceLens
+# CommerceLens — An Auditable E-commerce Data Analysis Agent
 
-**English** · [简体中文](README.zh-CN.md)
+[English](README.md) · [简体中文](README.zh-CN.md)
 
-An auditable e-commerce analysis Agent with controlled execution and independent evaluation.
+## Project overview
 
-CommerceLens answers supported Chinese business questions over the public Olist dataset. It decomposes merchandise-value changes, investigates declining categories and sellers, and connects each report to executed SQL and review evidence.
+CommerceLens is a single-Agent e-commerce analytics demo over public Olist data. It organizes part of an operator's investigation into monthly merchandise changes: compare metrics, decompose contributions, inspect declining categories and sellers, and assemble an evidence-linked report. Supported Chinese questions enter a controlled workflow whose query results and task paths can be inspected.
 
-中文简介：支持中文经营问数、贡献拆解与受控下钻，保留查询证据，提供独立评测和离线演示。
+### Why an Agent?
 
-## Quick start — offline replay
+A single known query can be answered with SQL or a BI dashboard. CommerceLens explores a longer investigation: collect evidence, select a permitted next task, stop under explicit conditions, and produce an inspectable report. LangGraph makes that loop explicit; the LLM provides bounded task selection in normal mode and report wording. In diagnostic mode, business rules determine the branch. The current implementation does not demonstrate that an LLM is necessary for that deterministic branch.
 
-Windows with Python 3.11 is the supported replay environment. A fresh Python 3.11.9 virtual environment was created for this revision and requirements-replay.txt was installed from official PyPI. This path uses shipped historical traces and requires no API key, Docker or raw dataset.
+## Demo preview
+
+Historical case A compares December with November 2017. Merchandise decreases by BRL 266,357.20; order-volume contribution is −BRL 247,953.91, approximately 93% of the difference. The diagnostic then queries declining categories and sellers.
+
+Metrics use purchase time and all recorded statuses. Merchandise excludes freight. Contributions explain arithmetic changes; inventory or advertising causes require additional data.
+
+
+| Case | Months | Merchandise change | Diagnostic path |
+|---|---|---:|---|
+| A | 2017-11 → 2017-12 | −BRL 266,357.20 | Monthly → category orders → seller orders |
+| B | 2018-04 → 2018-02 | −BRL 152,469.04 | Monthly → category merchandise → seller merchandise |
+| C | 2018-03 → 2018-04 | +BRL 13,434.31 | Monthly only; rule stops decline drill-down |
+
+![Chinese question entry](docs/assets/demo_home.jpg)
+
+![Business summary](docs/assets/demo_overview.jpg)
+
+<details><summary>Diagnostic drill-down, SQL and evaluation</summary>
+
+![Category and seller drill-down](docs/assets/demo_diagnostic.jpg)
+![SQL evidence](docs/assets/demo_sql.jpg)
+![Historical evaluation display](docs/assets/demo_evidence_eval.jpg)
+
+![Case B: average-value decline](docs/assets/demo_case_b.jpg)
+![Case C: growth and early stop](docs/assets/demo_case_c.jpg)
+
+</details>
+
+Screenshots capture the current main baseline running locally, replaying historical records with the page's Light theme selected. They do not represent new live inference.
+
+## Key features
+
+Three supported Chinese question families, month comparisons, contribution decomposition, bounded category/seller drill-down, SQL evidence, JSON execution traces and independent evaluation.
+
+## System architecture
+
+Five logical layers cover interaction, orchestration, execution governance, data/business rules, and evidence/evaluation. The complete layered diagram and exact execution flow are in the architecture guide.
+
+[Layered architecture and control/data flows](docs/architecture.md)
+
+```mermaid
+flowchart TB
+    subgraph L1["L1 · Interaction"]
+        UI["Streamlit · Chinese questions and replay"]
+        VIEW["Business summary · Altair · SQL and score views"]
+    end
+    subgraph L2["L2 · Agent orchestration"]
+        ROUTE["Python intent and month validation"]
+        GRAPH["LangGraph · plan ↔ execute"]
+        CHOICE["DeepSeek · eligible task selection"]
+        RULE["Python diagnostic_tasks · 0 or 1 candidate"]
+        AFTER["run resumes after ainvoke"]
+    end
+    subgraph L3["L3 · Harness and execution"]
+        POLICY["Task IDs · dependencies · budget · bounded retries"]
+        TOOL["AnalystAdapter → MCP stdio"]
+        AST["SQLGlot SELECT / AST / table checks"]
+    end
+    subgraph L4["L4 · Data and business analysis"]
+        CSV["Olist source CSV"]
+        DB[("Read-only DuckDB snapshot")]
+        DOMAIN["SQL templates · metrics · decompose"]
+    end
+    subgraph L5["L5 · Evidence and evaluation"]
+        REVIEW["Optional post-graph Docker review"]
+        ORACLE["Python CSV Oracle"]
+        TRACE["Report generation · JSON Trace"]
+        EVAL["CommerceLens-Eval · separate evaluation runs"]
+    end
+    UI -->|C| ROUTE
+    ROUTE -->|C| GRAPH
+    RULE -.->|D candidates| GRAPH
+    GRAPH -->|C allowed choices| CHOICE
+    CHOICE -.->|D task and reason| GRAPH
+    GRAPH -->|C validate| POLICY
+    POLICY -->|C| TOOL
+    TOOL -->|C| AST
+    AST -.->|D SQL| DB
+    CSV -.->|D import| DB
+    DOMAIN -.->|D templates and contribution values| GRAPH
+    DB -.->|E rows and query ID through adapter| GRAPH
+    GRAPH -->|C graph ended| AFTER
+    AFTER -->|C if review enabled| REVIEW
+    CSV -.->|D copied CSV| REVIEW
+    REVIEW -->|C trusted Python via upstream executor| ORACLE
+    ORACLE -.->|E comparison results| TRACE
+    AFTER -->|C report stage after optional review| TRACE
+    TRACE -.->|E answer and trace| VIEW
+    CSV -.->|V reference aggregation| EVAL
+    TRACE -.->|V saved trace and evidence| EVAL
+    EVAL -.->|V saved scores read by UI| VIEW
+    classDef agent fill:#e6eefc,stroke:#4269a8,color:#142b49
+    classDef govern fill:#fff1d5,stroke:#a77922,color:#49360d
+    classDef verify fill:#e3f3e9,stroke:#347b55,color:#153b27
+    class GRAPH,CHOICE,RULE agent
+    class POLICY,TOOL,AST govern
+    class REVIEW,ORACLE,TRACE,EVAL verify
+```
+
+## Core Engineering Contributions
+
+1. **Controlled orchestration** — LangGraph maintains the loop. Normal-mode model choices are bounded by task, dependency and budget checks.
+2. **Rule-guided e-commerce diagnostics** — Python contributions determine category/seller investigation. Diagnostic rounds expose at most one task.
+3. **Evidence-based evaluation** — CSV references verify aggregates while separate checks examine paths, citations, policy and failures.
+
+## Technology Stack
+
+| Layer | Technology | Actual responsibility | Why it is used here |
+|---|---|---|---|
+| Runtime | Python 3.11 | Business rules, adapters and evaluation | One runtime for orchestration and independent reference code |
+| Interaction | Streamlit + Altair | Chinese question UI, charts and replay | Local demonstration with inspectable evidence |
+| Orchestration | LangGraph | Two-node plan/execute state loop | Explicit routing and termination |
+| Model | DeepSeek API | Eligible task selection and normal report text | Bounded natural-language planning and expression |
+| Tool boundary | AnalystAdapter + MCP stdio | Structured evidence, retries and local process calls | Keep tool execution behind a validated interface |
+| Query | SQLGlot + DuckDB | AST constraints and read-only snapshot aggregation | Limit query surface while using local analytical SQL |
+| Review | Docker + DeepAnalyze executor | Post-graph execution of trusted verification code | Reuse an existing isolated Python executor |
+| Verification | CSV Oracle + CommerceLens-Eval | Independent aggregation, path/citation/policy/fault checks | Check both answers and execution behavior |
+
+## Agent Workflow
+
+Chinese routing validates intent and months before the graph. Its only nodes are plan and execute. Normal mode permits eligible task choice or finish after evidence. Diagnostic_tasks determines zero or one eligible task and termination in Python. SQL uses templates and saved definitions.
+
+After graph completion, run optionally performs Docker review, handles reports and persists JSON. Diagnosis Markdown is always Python-rendered; normal reports are model-written. This is single-Agent orchestration using DeepAnalyze's execution modules.
+
+## Harness-style Execution Governance
+
+Project-written checks enforce task catalogs, dependencies, a four-task budget, invalid-choice correction, bounded query retries, AST restrictions, read-only execution, result validation and evidence recording. The main adapter calls MCP's SQL query tool.
+
+[Mechanisms and source anchors](docs/technical_design.md)
+
+## Evaluation Framework
+
+| Suite | Historical result | Scope |
+|---|---:|---|
+| Golden SQL | 10/10 | CSV reference equality |
+| Agent | 5/5 | Task path, numbers, query IDs |
+| Docker Agent | 5/5 | Additional stored review checks |
+| SQL Policy | 5/5 | Rejection and unchanged DB hash |
+| Fault/report | 11/11 | Mock failures and fact fields |
+
+These are historical results. This revision validates replay only. Overview initially ran three queries and later ran one, changing the fixed suite from 4/5 to 5/5; saved records cannot control all experimental variables. CSV aggregation is independent, while decomposition reuses the same function. Query-ID presence does not establish sentence-level entailment.
+
+The release records separately document fresh Windows 10 / Python 3.11.9 / Streamlit 1.67.0 installation, three AppTest cases and real HTTP 200, without API, Docker, raw CSV or database.
+
+[Scoring definitions, evidence and reproduction](docs/evaluation.md) · [Saved fresh-install record](docs/fresh_replay_validation.json)
+
+## Quick Start — Offline Demo
+
+No API key, Docker or raw CSV is required. Run from the repository root, then click 查看离线演示 to switch A/B/C.
 
 ```powershell
 py -3.11 -m venv .venv
@@ -18,113 +166,50 @@ py -3.11 -m venv .venv
 powershell -NoProfile -ExecutionPolicy Bypass -File scripts/start_demo.ps1
 ```
 
-Open [localhost](http://127.0.0.1:8501/), click **查看离线演示**, and select case A. Read **经营摘要**, then expand **执行证据** and **评测**. Switching to case C shows an increase despite fewer orders.
+[http://127.0.0.1:8501/](http://127.0.0.1:8501/)
 
-## Fresh-environment replay verification
+This package restores the Light theme configuration omitted in the earlier web upload. Keep the server process running.
 
-Fresh replay validation passed on Windows 10, Python 3.11.9, Streamlit 1.67.0. A newly created environment installed requirements-replay.txt from official PyPI. All three cases, SQL evidence and evaluation widgets passed Streamlit AppTest. A real Streamlit process returned health ok and homepage HTTP 200. No DeepSeek, Docker or raw data was used.
+## Optional Live Mode
 
-The exact resolved package set and checks are recorded in [fresh replay validation](docs/fresh_replay_validation.json). Browser screenshots remain pending.
-
-## Engineering highlights
-
-- Controlled analysis orchestration combines model task selection with Python diagnostic rules and LangGraph state.
-- E-commerce adaptation defines Olist-specific metric grains, monthly comparisons and category/seller drill-down.
-- Independent evaluation checks both numeric results and executed task paths, supported by CSV Oracle and query-linked review evidence.
-
-## Key features and core workflow
-
-The supported question families are two-month merchandise comparisons, all-time overview metrics and top merchandise categories. Example input is **2017年12月比11月，销售额变化了多少？**
-
-The historical case A reports a BRL 266,357.20 decline, with BRL 247,953.91 attributable to the order-volume component. The workflow then queries declining categories and sellers. The page presents business summaries and contribution charts with expandable SQL, query IDs and Docker review records.
-
-## Architecture and technology stack
-
-```mermaid
-flowchart LR
-    UI["Streamlit / Altair"] --> R["Python intent and month rules"]
-    R --> W["Analysis subprocess"]
-    W --> G["LangGraph plan / execute"]
-    G <--> L["DeepSeek"]
-    G --> M["MCP stdio / SQLGlot"]
-    M --> D[("Read-only DuckDB")]
-    C["Original Olist CSV"] --> D
-    G --> V["DeepAnalyze Docker executor"]
-    C --> V
-    G --> T["JSON trace / report"]
-    V --> T
-    T --> UI
-    T --> E["CommerceLens-Eval"]
-    C --> E
-```
-
-## Agent orchestration
-
-Normal mode lets the model choose among eligible registered tasks and eventually finish. Diagnostic mode restricts every planning round to at most one candidate. Python determines decline/growth, contribution-based branches, the leading category and termination. LangGraph maintains execution state and dependencies.
-
-SQL comes from validated templates or saved query definitions. Diagnostic reports always use Python rendering after checking model-returned fact fields. CSV aggregation has an independent implementation; contribution decomposition shares the same function inside and outside Docker.
-
-## Harness-style execution governance
-
-The execution boundary validates task IDs, dependencies, bounded retries, SQL AST nodes and result structures. DuckDB is read-only with external access disabled, two threads, a 512MB memory setting and a query-interrupt timer. The Docker reviewer uses trusted project code, explicitly disables networking and retains query-linked review results.
-
-This is single-Agent orchestration. The page reuses the DeepAnalyze executor modules listed in [third-party notices](THIRD_PARTY_NOTICES.md).
-
-## Live configuration and data preparation
-
-Install the full pinned dependencies and obtain the nine CSVs following [data preparation](data/README.md).
+Live execution requires full dependencies, raw CSV, DeepSeek configuration and Docker, and may incur API costs. Prepare source files using data/README.md.
 
 ```powershell
 .venv/Scripts/python.exe -m pip install -r requirements-demo.txt
 .venv/Scripts/python.exe scripts/build_phase1_data.py
-Copy-Item .env.example .env
 docker pull python:3.11-slim
 ```
 
-Fill in the existing configuration keys in .env before starting live analysis.
+This package restores .env.example. Copy it to a local .env and set the configuration keys below, or point COMMERCE_LLM_CONFIG to an existing file. Never upload the populated .env.
 
-| Key | Purpose |
+```dotenv
+LLM_BASE_URL=https://api.deepseek.com
+LLM_MODEL_ID=your_model_id
+LLM_API_KEY=your_private_key
+```
+
+Live API/Docker execution and full live installation were not validated in this documentation revision.
+
+## Project Structure
+
+| Directory | Responsibility |
 |---|---|
-| LLM_BASE_URL | https://api.deepseek.com or its /v1 path |
-| LLM_MODEL_ID | Model available to your DeepSeek account |
-| LLM_API_KEY | Your private API key |
+| scripts/ | UI, routing, planner, adapters, SQL and review |
+| commercelens_eval/ | Oracle and evaluation entry points |
+| artifacts/ | Selected historical aggregate/trace/score fixtures |
+| vendor/DeepAnalyze/ | Pinned upstream execution modules and license |
+| docs/ | Architecture, design, evaluation and source appendix |
 
-COMMERCE_LLM_CONFIG can point to another configuration file. Live requests send standardized tasks and public aggregates to the configured DeepSeek endpoint and may incur API costs. Docker Desktop must be running Linux containers. The candidate includes the required pinned DeepAnalyze execution modules at their original relative paths.
+[Directory guide](docs/project_structure.md) · [Implementation appendix](docs/implementation_map.md)
 
-This revision installs only the offline replay requirements under owner authorization. Live API execution, full live-dependency installation and Docker image pulling were not performed. Live reproduction commands remain opt-in.
+## Limitations & Future Work
 
-## Evaluation framework and historical results
+Question coverage is bounded by regex and task catalogs. Historical snapshots, incremental ingestion, queues, access control, persistent graph recovery and cross-dataset validation remain future work. OpenJudge, a general Grader Adapter, sentence-level scoring and measured human BI productivity gains are absent. Fixed SQL baselines know their paths and use a different timing boundary.
 
-| Suite | Historical saved result | Meaning |
-|---|---:|---|
-| Golden SQL | 10/10 | SQL rows match independently aggregated CSV expectations |
-| Agent | 5/5 | Expected task path, numeric result and query-ID presence |
-| Docker Agent | 5/5 | Same checks plus matched Docker evidence |
-| SQL policy | 5/5 | Five forbidden requests rejected and DB hash unchanged |
-| Fault/report checks | 11/11 | Injected timeout, invalid-plan, empty-data and field-validation checks |
+## License & Acknowledgements
 
-The initial Agent suite scored 4/5. Overview executed three queries instead of the expected one. A later saved run follows the one-query path and scores 5/5. This is a small fixed-suite regression result.
+Project-owned source/docs are MIT, attributed to Yessyye. Vendor files retain upstream notices. Olist-derived fixtures follow separate CC BY-NC-SA 4.0 terms and retain linkable seller IDs; see the data notice for commercial restrictions.
 
-See [evaluation details and commands](docs/evaluation.md) and [this candidate's audit](GITHUB_RELEASE_AUDIT.md) for current validation results. Replay measures rescoring time, not original model latency.
+[LICENSE](LICENSE) · [DATA_LICENSE](DATA_LICENSE.md) · [Third-party notices](THIRD_PARTY_NOTICES.md)
 
-## Demo screenshots
-
-Current release screenshots are pending capture. No generated mockup or old screenshot is presented as this candidate's runtime evidence. The actual replay can be inspected locally through the quick start.
-
-## Project structure
-
-The code retains scripts/ and commercelens_eval/ to preserve import and execution paths. See [complete candidate tree](docs/project_structure.md), [technical design](docs/technical_design.md), [architecture](docs/architecture.md), and [function-level map](docs/implementation_map.md).
-
-## Known limitations and roadmap
-
-Chinese intent routing covers limited regex patterns. Diagnostic task branching and summaries use deterministic rules. Citations are checked through ID presence, with no sentence-level semantic judge. OpenJudge and a Grader Adapter are absent. Data are historical snapshots. Incremental ingestion, queues, authentication, concurrency validation and cross-dataset generalization remain future work.
-
-Human BI time savings have not been measured. SQL baselines are given their task paths in advance, while Agent timing includes model and Docker work.
-
-## License and acknowledgements
-
-CommerceLens-owned source and documentation are MIT under [LICENSE](LICENSE), with the owner-confirmed public attribution Yessyye (https://github.com/Yessyye/). Copied vendor files retain their own upstream licenses. Olist-derived fixtures and reports are governed separately in [DATA_LICENSE.md](DATA_LICENSE.md). Raw CSVs are excluded. Pinned upstream code retains its MIT notice.
-
-Credits and dependencies are recorded in [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md).
-
-The per-file artifact disclosure is in [derived data inventory](docs/derived_data_inventory.md). Historical fixtures retain pseudonymous seller identifiers. Operational container/image identifiers have been redacted for public release. Owner authorization for that specific fixture set is recorded separately from the source-code license.
+[Current documentation validation](docs/documentation_review.md) · [Machine-readable replay observations](docs/documentation_validation.json)

@@ -1,91 +1,69 @@
-# Public repository file structure
+# Repository guide / 项目目录
 
-English README.md and Chinese README.zh-CN.md share the same runtime code and fixtures.
+[English README](../README.md) · [中文 README](../README.zh-CN.md) · [Source-level implementation map](implementation_map.md)
 
-- `.env.example`
-- `.gitignore`
-- `.streamlit/config.toml`
-- `DATA_LICENSE.md`
-- `GITHUB_RELEASE_AUDIT.md`
-- `LICENSE`
-- `PUBLICATION_PREVIEW.md`
-- `README.md`
-- `README.zh-CN.md`
-- `RELEASE_MANIFEST.md`
-- `THIRD_PARTY_NOTICES.md`
-- `artifacts/phase1/query_results.json`
-- `artifacts/phase2/planner_0bae01c8d97e481fad990a5ace79cc9f.json`
-- `artifacts/phase2/planner_0e9104dbfdb046ecae6172273ea25bfe.json`
-- `artifacts/phase2/planner_1db99daf59ed4cdab7a7169627baa66b.json`
-- `artifacts/phase2/planner_213a42097d2e4fdfbce177f6874213a2.json`
-- `artifacts/phase2/planner_29aacd7933574c2b87234d08465a3938.json`
-- `artifacts/phase2/planner_2b936e75a12a43149c1e4783393c54b6.json`
-- `artifacts/phase2/planner_2e00f670a79941c29ab6e903ff155521.json`
-- `artifacts/phase2/planner_42952277a5b84566941527b51627d4e6.json`
-- `artifacts/phase2/planner_5118329795904bb199277a94d7bf9dfb.json`
-- `artifacts/phase2/planner_5dd3ef11531341d1bf6b9764f11fbacf.json`
-- `artifacts/phase2/planner_5efc6da699ed450a961cc6b69d698311.json`
-- `artifacts/phase2/planner_7193e332077049e0be6b11175b0ec735.json`
-- `artifacts/phase2/planner_828c29afcf564eeca3c475c9dd5871d2.json`
-- `artifacts/phase2/planner_9390a70cdbb44314a828541de78981d5.json`
-- `artifacts/phase2/planner_98bc24e5e9ba47a5832de4944ea247b5.json`
-- `artifacts/phase2/planner_99277b0309204334bda77f6f99f55583.json`
-- `artifacts/phase2/planner_b15b435f72ab4f5a99bf390c2da480c0.json`
-- `artifacts/phase2/planner_b3d7b583c8df4fd783b9e75da035efd8.json`
-- `artifacts/phase2/planner_bb1a3a183ff541b4a3c0f865cd6a6c73.json`
-- `artifacts/phase2/planner_d10ed626126f45dd8f5330475909f225.json`
-- `artifacts/phase2/planner_df5ee6359026444bb170f7cc32d97f8e.json`
-- `artifacts/phase2/planner_f1a60a38ef44406dac2d81bfa440b20b.json`
-- `artifacts/phase3/agent_eval.json`
-- `artifacts/phase3/agent_eval_docker.json`
-- `artifacts/phase3/agent_eval_initial.json`
-- `artifacts/phase3/bi_comparison_pilot.json`
-- `artifacts/phase3/diagnostic_eval.json`
-- `artifacts/phase3/diagnostic_fault_checks.json`
-- `artifacts/phase3/golden_sql_results.json`
-- `artifacts/phase3/sql_policy_validation.json`
-- `commercelens_eval/__init__.py`
-- `commercelens_eval/agent_eval.py`
-- `commercelens_eval/baseline.py`
-- `commercelens_eval/diagnostic_eval.py`
-- `commercelens_eval/diagnostic_faults.py`
-- `commercelens_eval/golden_sql.py`
-- `commercelens_eval/question_routing.py`
-- `commercelens_eval/regression.py`
-- `commercelens_eval/sql_policy.py`
-- `data/README.md`
-- `docs/architecture.md`
-- `docs/candidate_security_results.json`
-- `docs/candidate_test_results.json`
-- `docs/dependency_licenses.json`
-- `docs/derived_data_inventory.md`
-- `docs/evaluation.md`
-- `docs/fresh_replay_validation.json`
-- `docs/implementation_map.md`
-- `docs/project_structure.md`
-- `docs/source_identity.json`
-- `docs/technical_design.md`
-- `requirements-demo.txt`
-- `requirements-phase0.lock`
-- `requirements-replay.txt`
-- `scripts/analysis_periods.py`
-- `scripts/analyst_adapter.py`
-- `scripts/build_phase1_data.py`
-- `scripts/business_questions.py`
-- `scripts/check_phase1_mcp.py`
-- `scripts/check_release_readiness.ps1`
-- `scripts/demo_app.py`
-- `scripts/demo_theme.css`
-- `scripts/diagnostic_report.py`
-- `scripts/docker_review.py`
-- `scripts/phase1_mcp.py`
-- `scripts/phase1_metrics.yaml`
-- `scripts/phase2_planner.py`
-- `scripts/sales_drivers.py`
-- `scripts/start_demo.ps1`
-- `vendor/DeepAnalyze/LICENSE`
-- `vendor/DeepAnalyze/demo/chat_v2/backend_app/services/__init__.py`
-- `vendor/DeepAnalyze/demo/chat_v2/backend_app/services/docker_executor.py`
-- `vendor/DeepAnalyze/demo/chat_v2/backend_app/services/sample_catalog.py`
-- `vendor/DeepAnalyze/demo/chat_v2/backend_app/services/workspace.py`
-- `vendor/DeepAnalyze/demo/chat_v2/backend_app/settings.py`
+This is the actual public baseline, excluding .git, environments, caches and external datasets. Generated databases and original CSVs are not shipped. The tree groups repetitive historical traces instead of listing every UUID.
+
+```text
+CommerceLens/
+├── README.md / README.zh-CN.md       English / Chinese entry points
+├── LICENSE / DATA_LICENSE.md        Separate code and derived-data terms
+├── THIRD_PARTY_NOTICES.md            Vendor and dependency notices
+├── requirements-replay.txt          Minimal offline UI requirements
+├── requirements-demo.txt            Full demo requirements
+├── requirements-phase0.lock         Earlier dependency lock snapshot
+├── scripts/
+│   ├── start_demo.ps1               Offline-first Streamlit launcher
+│   ├── demo_app.py / demo_theme.css UI, replay, charts and stored scores
+│   ├── business_questions.py        Supported Chinese intent routing
+│   ├── analysis_periods.py          Validated month pairs and SQL builders
+│   ├── phase2_planner.py            State, plan/execute graph, model calls
+│   ├── analyst_adapter.py           MCP boundary and QueryEvidence
+│   ├── phase1_mcp.py                Four tools, SQL policy, DuckDB execution
+│   ├── phase1_metrics.yaml          Metric definitions
+│   ├── build_phase1_data.py         Local CSV-to-DuckDB preparation
+│   ├── sales_drivers.py             Decimal contribution calculation
+│   ├── diagnostic_report.py         Fact schema and deterministic report
+│   ├── docker_review.py             Graph-external container verification
+│   └── check_*.py / check_*.ps1      Existing smoke/readiness utilities
+├── commercelens_eval/
+│   ├── baseline.py                  Python CSV Oracle
+│   ├── golden_sql.py                Ten aggregate-reference checks
+│   ├── agent_eval.py                Five normal-mode path/result checks
+│   ├── diagnostic_eval.py           Diagnosis and fixed-SQL pilot
+│   ├── diagnostic_faults.py         Mock faults and report-field checks
+│   ├── sql_policy.py                Rejection and database hash checks
+│   └── question_routing.py / regression.py
+├── artifacts/
+│   ├── phase1/query_results.json    Query definitions and saved aggregates
+│   ├── phase2/planner_*.json        Selected historical execution traces
+│   └── phase3/*.json                Historical evaluation and pilot results
+├── data/README.md                   Source data acquisition instructions
+├── docs/
+│   ├── architecture.md             Five layers and exact runtime flow
+│   ├── technical_design.md         Function-level mechanisms and boundaries
+│   ├── evaluation.md               Scoring, commands and experimental limits
+│   ├── implementation_map.md        Existing detailed source appendix
+│   ├── documentation_review.md     This revision and validation record
+│   ├── documentation_validation.json Current offline replay observations
+│   ├── assets/*.jpg                Real current-runtime screenshots
+│   └── *.json / *.md               Preserved release audit evidence
+└── vendor/DeepAnalyze/              Pinned executor, dependencies and LICENSE
+```
+
+## Entry points
+
+| Purpose | Entry point |
+|---|---|
+| UI | `scripts/demo_app.py::main` |
+| Chinese business question | `scripts/business_questions.py::interpret_question`, then UI `run_business_question` |
+| LangGraph | `scripts/phase2_planner.py::build_workflow`, called by `run` |
+| MCP server | `scripts/phase1_mcp.py`, server.run over stdio |
+| Independent CSV reference | `commercelens_eval/baseline.py::oracle` |
+| Evaluation | Module entry points in `commercelens_eval`; see [commands](evaluation.md) |
+
+The current public baseline omits `.gitignore`, `.env.example` and `.streamlit/config.toml`. The previous directory document listed them despite their absence. This revision corrects the inventory and documents the theme/configuration workaround without adding runtime files.
+
+## Packaging follow-up
+
+The 2026-11-20 upload package restores `.gitignore`, `.env.example` and `.streamlit/config.toml` from the previously audited release candidate. The absence described above refers to the public source baseline. No core business code changed. See [packaging validation](packaging_validation.json).

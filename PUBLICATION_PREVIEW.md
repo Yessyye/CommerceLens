@@ -1,3 +1,5 @@
+> Historical release-candidate record. The current upload payload and verification are described in RELEASE_MANIFEST.md and docs/packaging_validation.json.
+
 # Publication approval preview
 
 Target https://github.com/Yessyye/CommerceLens

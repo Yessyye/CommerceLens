@@ -1,3 +1,5 @@
+> Historical release-candidate record. The current upload payload and verification are described in RELEASE_MANIFEST.md and docs/packaging_validation.json.
+
 # GitHub release candidate audit
 
 Audit date 2026-11-20. Final status **READY WITH WARNINGS**. Candidate offline checks completed successfully. Live API/Docker execution, full live-environment installation and current screenshots remain pending. A newly installed replay-only environment is evaluated separately in this revision.

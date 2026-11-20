@@ -1,0 +1,92 @@
+{
+  "checked_at": "2026-11-20T07:02:55.236891+00:00",
+  "scope": "Current documentation checkout, existing interpreter; not a new clean installation or live benchmark",
+  "python": "3.11.9",
+  "platform": "Windows-10-10.0.26200-SP0",
+  "streamlit": "1.67.0",
+  "http": {
+    "/_stcore/health": 200,
+    "/": 200
+  },
+  "cases": [
+    {
+      "case": "A",
+      "periods": {
+        "baseline": "2017-11",
+        "target": "2017-12"
+      },
+      "tabs": [
+        "分析报告",
+        "执行证据",
+        "评测"
+      ],
+      "metric_values": [
+        "R$ -266,357.20",
+        "R$ -247,953.91",
+        "R$ -18,403.29",
+        "10/10",
+        "5/5",
+        "5/5"
+      ],
+      "sql_blocks": 3,
+      "dataframes": 7,
+      "summary": true,
+      "query_ids_visible": true,
+      "exceptions": 0
+    },
+    {
+      "case": "B",
+      "periods": {
+        "baseline": "2018-04",
+        "target": "2018-02"
+      },
+      "tabs": [
+        "分析报告",
+        "执行证据",
+        "评测"
+      ],
+      "metric_values": [
+        "R$ -152,469.04",
+        "R$ -28,390.30",
+        "R$ -124,078.74",
+        "10/10",
+        "5/5",
+        "5/5"
+      ],
+      "sql_blocks": 3,
+      "dataframes": 7,
+      "summary": true,
+      "query_ids_visible": true,
+      "exceptions": 0
+    },
+    {
+      "case": "C",
+      "periods": {
+        "baseline": "2018-03",
+        "target": "2018-04"
+      },
+      "tabs": [
+        "分析报告",
+        "执行证据",
+        "评测"
+      ],
+      "metric_values": [
+        "R$ +13,434.31",
+        "R$ -38,077.14",
+        "R$ +51,511.45",
+        "10/10",
+        "5/5",
+        "5/5"
+      ],
+      "sql_blocks": 1,
+      "dataframes": 5,
+      "summary": true,
+      "query_ids_visible": true,
+      "exceptions": 0
+    }
+  ],
+  "api_calls": false,
+  "docker_started": false,
+  "raw_csv_present": false,
+  "duckdb_present": false
+}
