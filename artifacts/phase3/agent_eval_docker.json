@@ -1,0 +1,93 @@
+{
+  "passed": 5,
+  "total": 5,
+  "cases": [
+    {
+      "id": "overview",
+      "expected_path": [
+        "overview"
+      ],
+      "passed": true,
+      "trace": "artifacts\\phase2\\planner_5118329795904bb199277a94d7bf9dfb.json",
+      "actual_path": [
+        "overview"
+      ],
+      "numeric_match": true,
+      "citations": true,
+      "tokens": 1184,
+      "model_calls": 3,
+      "docker_review": true,
+      "elapsed_seconds": 21.69
+    },
+    {
+      "id": "ranking",
+      "expected_path": [
+        "top_categories"
+      ],
+      "passed": true,
+      "trace": "artifacts\\phase2\\planner_df5ee6359026444bb170f7cc32d97f8e.json",
+      "actual_path": [
+        "top_categories"
+      ],
+      "numeric_match": true,
+      "citations": true,
+      "tokens": 1316,
+      "model_calls": 3,
+      "docker_review": true,
+      "elapsed_seconds": 13.64
+    },
+    {
+      "id": "comparison_only",
+      "expected_path": [
+        "jul_aug_change"
+      ],
+      "passed": true,
+      "trace": "artifacts\\phase2\\planner_9390a70cdbb44314a828541de78981d5.json",
+      "actual_path": [
+        "jul_aug_change"
+      ],
+      "numeric_match": true,
+      "citations": true,
+      "tokens": 1169,
+      "model_calls": 3,
+      "docker_review": true,
+      "elapsed_seconds": 13.72
+    },
+    {
+      "id": "decline",
+      "expected_path": [
+        "jul_aug_change",
+        "category_contributions"
+      ],
+      "passed": true,
+      "trace": "artifacts\\phase2\\planner_828c29afcf564eeca3c475c9dd5871d2.json",
+      "actual_path": [
+        "jul_aug_change",
+        "category_contributions"
+      ],
+      "numeric_match": true,
+      "citations": true,
+      "tokens": 2290,
+      "model_calls": 4,
+      "docker_review": true,
+      "elapsed_seconds": 15.19
+    },
+    {
+      "id": "growth",
+      "expected_path": [
+        "jul_aug_change"
+      ],
+      "passed": true,
+      "trace": "artifacts\\phase2\\planner_99277b0309204334bda77f6f99f55583.json",
+      "actual_path": [
+        "jul_aug_change"
+      ],
+      "numeric_match": true,
+      "citations": true,
+      "tokens": 1258,
+      "model_calls": 3,
+      "docker_review": true,
+      "elapsed_seconds": 13.52
+    }
+  ]
+}

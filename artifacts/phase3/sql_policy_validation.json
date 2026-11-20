@@ -1,0 +1,42 @@
+{
+  "positive_control": {
+    "columns": [
+      "count_star()"
+    ],
+    "rows": [
+      [
+        99441
+      ]
+    ],
+    "query_id": "881d23c017c84892b5d69fd6d8ed0f76",
+    "elapsed_seconds": 0.11
+  },
+  "database_unchanged": true,
+  "rejections": [
+    {
+      "case": "write_statement",
+      "passed": true,
+      "rejection": "Expected one SELECT"
+    },
+    {
+      "case": "unknown_table",
+      "passed": true,
+      "rejection": "Query references a table outside Olist"
+    },
+    {
+      "case": "multiple_statements",
+      "passed": true,
+      "rejection": "Expected one SELECT"
+    },
+    {
+      "case": "oversized_result_limit",
+      "passed": true,
+      "rejection": "Query exceeds size or row limit"
+    },
+    {
+      "case": "cross_join_without_condition",
+      "passed": true,
+      "rejection": "JOIN requires an ON condition"
+    }
+  ]
+}

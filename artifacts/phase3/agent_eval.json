@@ -1,0 +1,88 @@
+{
+  "passed": 5,
+  "total": 5,
+  "cases": [
+    {
+      "id": "overview",
+      "expected_path": [
+        "overview"
+      ],
+      "passed": true,
+      "trace": "artifacts\\phase2\\planner_0e9104dbfdb046ecae6172273ea25bfe.json",
+      "actual_path": [
+        "overview"
+      ],
+      "numeric_match": true,
+      "citations": true,
+      "tokens": 1165,
+      "model_calls": 3,
+      "elapsed_seconds": 5.89
+    },
+    {
+      "id": "ranking",
+      "expected_path": [
+        "top_categories"
+      ],
+      "passed": true,
+      "trace": "artifacts\\phase2\\planner_5efc6da699ed450a961cc6b69d698311.json",
+      "actual_path": [
+        "top_categories"
+      ],
+      "numeric_match": true,
+      "citations": true,
+      "tokens": 1342,
+      "model_calls": 3,
+      "elapsed_seconds": 5.03
+    },
+    {
+      "id": "comparison_only",
+      "expected_path": [
+        "jul_aug_change"
+      ],
+      "passed": true,
+      "trace": "artifacts\\phase2\\planner_98bc24e5e9ba47a5832de4944ea247b5.json",
+      "actual_path": [
+        "jul_aug_change"
+      ],
+      "numeric_match": true,
+      "citations": true,
+      "tokens": 1165,
+      "model_calls": 3,
+      "elapsed_seconds": 5.41
+    },
+    {
+      "id": "decline",
+      "expected_path": [
+        "jul_aug_change",
+        "category_contributions"
+      ],
+      "passed": true,
+      "trace": "artifacts\\phase2\\planner_f1a60a38ef44406dac2d81bfa440b20b.json",
+      "actual_path": [
+        "jul_aug_change",
+        "category_contributions"
+      ],
+      "numeric_match": true,
+      "citations": true,
+      "tokens": 2287,
+      "model_calls": 4,
+      "elapsed_seconds": 6.44
+    },
+    {
+      "id": "growth",
+      "expected_path": [
+        "jul_aug_change"
+      ],
+      "passed": true,
+      "trace": "artifacts\\phase2\\planner_213a42097d2e4fdfbce177f6874213a2.json",
+      "actual_path": [
+        "jul_aug_change"
+      ],
+      "numeric_match": true,
+      "citations": true,
+      "tokens": 1196,
+      "model_calls": 3,
+      "elapsed_seconds": 5.42
+    }
+  ]
+}

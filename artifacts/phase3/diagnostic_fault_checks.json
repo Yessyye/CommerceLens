@@ -1,0 +1,13 @@
+{
+  "timeout_recovers_once": true,
+  "timeout_exhaustion": true,
+  "invalid_plan_stops": true,
+  "no_data_keeps_evidence": true,
+  "docker_failure_typed": true,
+  "report_rejects_sales_change_brl": true,
+  "report_rejects_direction": true,
+  "report_rejects_unit": true,
+  "report_rejects_periods": true,
+  "report_rejects_query_ids": true,
+  "report_rejects_unsupported_claim": true
+}

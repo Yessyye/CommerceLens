@@ -1,0 +1,9 @@
+{
+  "stage": "pre-publication",
+  "files_checked": 86,
+  "credential_or_private_path_matches": [],
+  "operational_identifiers_redacted": true,
+  "raw_data_database_venv_cache_excluded": true,
+  "required_notices_present": true,
+  "scope": "All text payload files except release archives and Git internals; pattern and structured-field checks"
+}

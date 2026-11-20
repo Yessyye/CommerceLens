@@ -1,0 +1,236 @@
+{
+  "question": "Explain whether merchandise sales changed mainly because of order volume or average merchandise per order. If sales declined, drill down by category and seller.",
+  "scenario": "2017-12 versus 2017-11",
+  "periods": {
+    "baseline": "2017-11",
+    "target": "2017-12"
+  },
+  "next_task": "finish",
+  "evidence": [
+    {
+      "task": "monthly_drivers",
+      "sql": "SELECT COUNT(DISTINCT CASE WHEN (o.order_purchase_timestamp >= '2017-11-01' AND o.order_purchase_timestamp < '2017-12-01') THEN o.order_id END) AS baseline_orders, ROUND(SUM(CASE WHEN (o.order_purchase_timestamp >= '2017-11-01' AND o.order_purchase_timestamp < '2017-12-01') THEN COALESCE(i.price,0) ELSE 0 END),2) AS baseline_sales, COUNT(DISTINCT CASE WHEN (o.order_purchase_timestamp >= '2017-12-01' AND o.order_purchase_timestamp < '2018-01-01') THEN o.order_id END) AS target_orders, ROUND(SUM(CASE WHEN (o.order_purchase_timestamp >= '2017-12-01' AND o.order_purchase_timestamp < '2018-01-01') THEN COALESCE(i.price,0) ELSE 0 END),2) AS target_sales FROM orders o LEFT JOIN order_items i ON o.order_id=i.order_id WHERE (o.order_purchase_timestamp >= '2017-11-01' AND o.order_purchase_timestamp < '2017-12-01') OR (o.order_purchase_timestamp >= '2017-12-01' AND o.order_purchase_timestamp < '2018-01-01')",
+      "query_id": "5392ea505ae847658b0c07846eca993c",
+      "columns": [
+        "baseline_orders",
+        "baseline_sales",
+        "target_orders",
+        "target_sales"
+      ],
+      "rows": [
+        [
+          7544,
+          1010271.37,
+          5673,
+          743914.17
+        ]
+      ],
+      "elapsed_seconds": 0.094,
+      "attempts": 1
+    },
+    {
+      "task": "category_order_declines",
+      "sql": "SELECT p.product_category_name AS dimension_key, COUNT(DISTINCT CASE WHEN (o.order_purchase_timestamp >= '2017-12-01' AND o.order_purchase_timestamp < '2018-01-01') THEN o.order_id END) - COUNT(DISTINCT CASE WHEN (o.order_purchase_timestamp >= '2017-11-01' AND o.order_purchase_timestamp < '2017-12-01') THEN o.order_id END) AS change_value FROM order_items i JOIN orders o ON i.order_id=o.order_id LEFT JOIN products p ON i.product_id=p.product_id WHERE ((o.order_purchase_timestamp >= '2017-11-01' AND o.order_purchase_timestamp < '2017-12-01') OR (o.order_purchase_timestamp >= '2017-12-01' AND o.order_purchase_timestamp < '2018-01-01')) GROUP BY p.product_category_name HAVING COUNT(DISTINCT CASE WHEN (o.order_purchase_timestamp >= '2017-12-01' AND o.order_purchase_timestamp < '2018-01-01') THEN o.order_id END) - COUNT(DISTINCT CASE WHEN (o.order_purchase_timestamp >= '2017-11-01' AND o.order_purchase_timestamp < '2017-12-01') THEN o.order_id END) < 0 ORDER BY change_value, p.product_category_name NULLS LAST LIMIT 5",
+      "query_id": "3396b462b94c4510aa1739438e1e3f6a",
+      "columns": [
+        "dimension_key",
+        "change_value"
+      ],
+      "rows": [
+        [
+          "cama_mesa_banho",
+          -336
+        ],
+        [
+          "moveis_decoracao",
+          -232
+        ],
+        [
+          "informatica_acessorios",
+          -192
+        ],
+        [
+          "ferramentas_jardim",
+          -188
+        ],
+        [
+          "esporte_lazer",
+          -117
+        ]
+      ],
+      "elapsed_seconds": 0.078,
+      "attempts": 1
+    },
+    {
+      "task": "seller_order_declines",
+      "sql": "SELECT i.seller_id AS dimension_key, COUNT(DISTINCT CASE WHEN (o.order_purchase_timestamp >= '2017-12-01' AND o.order_purchase_timestamp < '2018-01-01') THEN o.order_id END) - COUNT(DISTINCT CASE WHEN (o.order_purchase_timestamp >= '2017-11-01' AND o.order_purchase_timestamp < '2017-12-01') THEN o.order_id END) AS change_value FROM order_items i JOIN orders o ON i.order_id=o.order_id LEFT JOIN products p ON i.product_id=p.product_id WHERE ((o.order_purchase_timestamp >= '2017-11-01' AND o.order_purchase_timestamp < '2017-12-01') OR (o.order_purchase_timestamp >= '2017-12-01' AND o.order_purchase_timestamp < '2018-01-01')) AND p.product_category_name = 'cama_mesa_banho' GROUP BY i.seller_id HAVING COUNT(DISTINCT CASE WHEN (o.order_purchase_timestamp >= '2017-12-01' AND o.order_purchase_timestamp < '2018-01-01') THEN o.order_id END) - COUNT(DISTINCT CASE WHEN (o.order_purchase_timestamp >= '2017-11-01' AND o.order_purchase_timestamp < '2017-12-01') THEN o.order_id END) < 0 ORDER BY change_value, i.seller_id NULLS LAST LIMIT 5",
+      "query_id": "1707de6b38d84f53a4ed7af03e9f8bfb",
+      "columns": [
+        "dimension_key",
+        "change_value"
+      ],
+      "rows": [
+        [
+          "4a3ca9315b744ce9f8e9374361493884",
+          -74
+        ],
+        [
+          "8160255418d5aaa7dbdc9f4c64ebda44",
+          -49
+        ],
+        [
+          "54965bbe3e4f07ae045b90b0b8541f52",
+          -46
+        ],
+        [
+          "dc4a0fc896dc34b0d5bfec8438291c80",
+          -27
+        ],
+        [
+          "1835b56ce799e6a4dc4eddc053f04066",
+          -21
+        ]
+      ],
+      "elapsed_seconds": 0.078,
+      "attempts": 1
+    }
+  ],
+  "drivers": {
+    "baseline_orders": 7544,
+    "target_orders": 5673,
+    "baseline_sales_brl": "1010271.37",
+    "target_sales_brl": "743914.17",
+    "baseline_average_brl": "133.92",
+    "target_average_brl": "131.13",
+    "sales_change_brl": "-266357.20",
+    "volume_contribution_brl": "-247953.91",
+    "average_contribution_brl": "-18403.29"
+  },
+  "decisions": [
+    {
+      "task": "monthly_drivers",
+      "reason": "Need to decompose the merchandise sales change between 2017-11 and 2017-12 into order volume versus average merchandise per order drivers before deciding on further category/seller drill-down."
+    },
+    {
+      "task": "category_order_declines",
+      "reason": "Sales declined month-over-month (1,010,271.37 to 743,914.17) alongside a drop in orders (7,544 to 5,673). Because the observed change is negative, the question asks to drill down by category; category_order_declines ranks categories by decline in distinct orders, which identifies category-level volume contributions to the decline."
+    },
+    {
+      "task": "seller_order_declines",
+      "reason": "Sales declined from 1,010,271.37 to 743,914.17, driven mainly by orders falling from 7,544 to 5,673; the leading declining category is cama_mesa_banho (-336 orders), so the next step is to rank seller order-count declines within that category."
+    }
+  ],
+  "status": "completed",
+  "report_validation": {
+    "model_fields_match": false,
+    "rejected_fields": [
+      "periods",
+      "direction",
+      "unit",
+      "sales_change_brl",
+      "volume_contribution_brl",
+      "average_contribution_brl",
+      "query_ids",
+      "unsupported_fields"
+    ]
+  },
+  "answer": "### 2017-12 对比 2017-11\n商品金额**下降**，差额为 **-266357.20 BRL**。\n\n| 月份 | 订单量 | 商品金额（BRL） | 每单商品金额（BRL） |\n|---|---:|---:|---:|\n| 2017-11 | 7,544 | 1010271.37 | 133.92 |\n| 2017-12 | 5,673 | 743914.17 | 131.13 |\n\n订单量变化贡献 **-247953.91 BRL**，每单商品金额变化贡献 **-18403.29 BRL**。\n订单量贡献用订单数差乘两期平均每单金额。每单金额贡献为总差额减订单量贡献，包含分币舍入差。\n\n**品类下降排行（单）**\n- `cama_mesa_banho`：-336 单\n- `moveis_decoracao`：-232 单\n- `informatica_acessorios`：-192 单\n- `ferramentas_jardim`：-188 单\n- `esporte_lazer`：-117 单\n\n**品类内卖家下降排行（单）**\n筛选品类：`cama_mesa_banho`\n- `4a3ca9315b744ce9f8e9374361493884`：-74 单\n- `8160255418d5aaa7dbdc9f4c64ebda44`：-49 单\n- `54965bbe3e4f07ae045b90b0b8541f52`：-46 单\n- `dc4a0fc896dc34b0d5bfec8438291c80`：-27 单\n- `1835b56ce799e6a4dc4eddc053f04066`：-21 单\n\n查询证据：`5392ea505ae847658b0c07846eca993c`、`3396b462b94c4510aa1739438e1e3f6a`、`1707de6b38d84f53a4ed7af03e9f8bfb`\n\n按下单月份统计全部记录状态，商品金额不含运费。一个订单可涉及多个品类或卖家，分组订单量不可相加。变化贡献是算术拆解，数据缺少完整成本和广告投入。",
+  "docker_review": {
+    "drivers": {
+      "baseline_orders": 7544,
+      "target_orders": 5673,
+      "baseline_sales_brl": "1010271.37",
+      "target_sales_brl": "743914.17",
+      "baseline_average_brl": "133.92",
+      "target_average_brl": "131.13",
+      "sales_change_brl": "-266357.20",
+      "volume_contribution_brl": "-247953.91",
+      "average_contribution_brl": "-18403.29"
+    },
+    "container_id": "redacted-for-public-release",
+    "image_id": "redacted-for-public-release",
+    "network": "none",
+    "executor": "DeepAnalyze chat_v2",
+    "checks": [
+      {
+        "task": "monthly_drivers",
+        "query_id": "5392ea505ae847658b0c07846eca993c",
+        "matched": true
+      },
+      {
+        "task": "category_order_declines",
+        "query_id": "3396b462b94c4510aa1739438e1e3f6a",
+        "matched": true
+      },
+      {
+        "task": "seller_order_declines",
+        "query_id": "1707de6b38d84f53a4ed7af03e9f8bfb",
+        "matched": true
+      }
+    ],
+    "passed": true,
+    "drivers_match": true
+  },
+  "usage": [
+    {
+      "completion_tokens": 53,
+      "prompt_tokens": 210,
+      "total_tokens": 263,
+      "completion_tokens_details": null,
+      "prompt_tokens_details": {
+        "audio_tokens": null,
+        "cache_write_tokens": null,
+        "cached_tokens": 0,
+        "image_tokens": null,
+        "text_tokens": null
+      },
+      "prompt_cache_hit_tokens": 0,
+      "prompt_cache_miss_tokens": 210
+    },
+    {
+      "completion_tokens": 161,
+      "prompt_tokens": 611,
+      "total_tokens": 772,
+      "completion_tokens_details": null,
+      "prompt_tokens_details": {
+        "audio_tokens": null,
+        "cache_write_tokens": null,
+        "cached_tokens": 128,
+        "image_tokens": null,
+        "text_tokens": null
+      },
+      "prompt_cache_hit_tokens": 128,
+      "prompt_cache_miss_tokens": 483
+    },
+    {
+      "completion_tokens": 81,
+      "prompt_tokens": 1049,
+      "total_tokens": 1130,
+      "completion_tokens_details": null,
+      "prompt_tokens_details": {
+        "audio_tokens": null,
+        "cache_write_tokens": null,
+        "cached_tokens": 128,
+        "image_tokens": null,
+        "text_tokens": null
+      },
+      "prompt_cache_hit_tokens": 128,
+      "prompt_cache_miss_tokens": 921
+    },
+    {
+      "completion_tokens": 153,
+      "prompt_tokens": 222,
+      "total_tokens": 375,
+      "completion_tokens_details": null,
+      "prompt_tokens_details": {
+        "audio_tokens": null,
+        "cache_write_tokens": null,
+        "cached_tokens": 0,
+        "image_tokens": null,
+        "text_tokens": null
+      },
+      "prompt_cache_hit_tokens": 0,
+      "prompt_cache_miss_tokens": 222
+    }
+  ]
+}

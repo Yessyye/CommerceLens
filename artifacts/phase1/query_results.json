@@ -1,0 +1,133 @@
+{
+  "overview": {
+    "sql": "SELECT COUNT(DISTINCT o.order_id) AS orders, ROUND(SUM(i.price),2) AS sales_brl, ROUND(SUM(i.price)/COUNT(DISTINCT o.order_id),2) AS average_brl FROM orders o LEFT JOIN order_items i ON o.order_id=i.order_id",
+    "result": {
+      "columns": [
+        "orders",
+        "sales_brl",
+        "average_brl"
+      ],
+      "rows": [
+        [
+          99441,
+          13591643.7,
+          136.68
+        ]
+      ],
+      "query_id": "4413dde2f1814720925b504ac0f385d1",
+      "elapsed_seconds": 0.109
+    }
+  },
+  "top_categories": {
+    "sql": "SELECT p.product_category_name, ROUND(SUM(i.price),2) AS sales_brl FROM order_items i LEFT JOIN products p ON i.product_id=p.product_id GROUP BY p.product_category_name ORDER BY sales_brl DESC LIMIT 5",
+    "result": {
+      "columns": [
+        "product_category_name",
+        "sales_brl"
+      ],
+      "rows": [
+        [
+          "beleza_saude",
+          1258681.34
+        ],
+        [
+          "relogios_presentes",
+          1205005.68
+        ],
+        [
+          "cama_mesa_banho",
+          1036988.68
+        ],
+        [
+          "esporte_lazer",
+          988048.97
+        ],
+        [
+          "informatica_acessorios",
+          911954.32
+        ]
+      ],
+      "query_id": "3cd3ba83f08d45c3a32a8adeea9fe448",
+      "elapsed_seconds": 0.062
+    }
+  },
+  "item_grain": {
+    "sql": "SELECT COUNT(*) AS n FROM order_items GROUP BY order_id, order_item_id ORDER BY n DESC LIMIT 1",
+    "result": {
+      "columns": [
+        "n"
+      ],
+      "rows": [
+        [
+          1
+        ]
+      ],
+      "query_id": "d0ed2c1c24f34b1982b9ed01283e07a5",
+      "elapsed_seconds": 0.047
+    }
+  },
+  "order_fk": {
+    "sql": "SELECT COUNT(*) AS orphan_items FROM order_items i LEFT JOIN orders o ON i.order_id=o.order_id WHERE o.order_id IS NULL",
+    "result": {
+      "columns": [
+        "orphan_items"
+      ],
+      "rows": [
+        [
+          0
+        ]
+      ],
+      "query_id": "7dafb28800c042219c5418b45577b7f6",
+      "elapsed_seconds": 0.063
+    }
+  },
+  "jul_aug_change": {
+    "sql": "SELECT ROUND(SUM(CASE WHEN o.order_purchase_timestamp >= '2018-08-01' THEN i.price ELSE -i.price END),2) AS delta_brl FROM order_items i JOIN orders o ON i.order_id=o.order_id WHERE o.order_purchase_timestamp >= '2018-07-01' AND o.order_purchase_timestamp < '2018-09-01'",
+    "result": {
+      "columns": [
+        "delta_brl"
+      ],
+      "rows": [
+        [
+          -40820.89
+        ]
+      ],
+      "query_id": "fedede9d7769482ca6c7cf22117a87ce",
+      "elapsed_seconds": 0.079
+    }
+  },
+  "category_contributions": {
+    "sql": "SELECT p.product_category_name, ROUND(SUM(CASE WHEN o.order_purchase_timestamp >= '2018-08-01' THEN i.price ELSE -i.price END),2) AS delta_brl FROM order_items i JOIN orders o ON i.order_id=o.order_id LEFT JOIN products p ON i.product_id=p.product_id WHERE o.order_purchase_timestamp >= '2018-07-01' AND o.order_purchase_timestamp < '2018-09-01' GROUP BY p.product_category_name ORDER BY delta_brl LIMIT 5",
+    "result": {
+      "columns": [
+        "product_category_name",
+        "delta_brl"
+      ],
+      "rows": [
+        [
+          "relogios_presentes",
+          -23935.53
+        ],
+        [
+          "cool_stuff",
+          -14197.03
+        ],
+        [
+          "ferramentas_jardim",
+          -9741.44
+        ],
+        [
+          "moveis_escritorio",
+          -7016.4
+        ],
+        [
+          "telefonia_fixa",
+          -6595.22
+        ]
+      ],
+      "query_id": "966329ad6c804ba196c312291fcac279",
+      "elapsed_seconds": 0.062
+    }
+  },
+  "independent_csv_sum_brl": "13591643.70"
+}

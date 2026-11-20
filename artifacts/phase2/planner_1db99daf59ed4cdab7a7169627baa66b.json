@@ -1,0 +1,227 @@
+{
+  "question": "Compare order volume and average merchandise per order, explain the contributions to sales change, and if declining drill down to categories and sellers.",
+  "scenario": "2018-08 versus 2018-07",
+  "periods": {
+    "baseline": "2018-07",
+    "target": "2018-08"
+  },
+  "next_task": "finish",
+  "evidence": [
+    {
+      "task": "monthly_drivers",
+      "sql": "SELECT COUNT(DISTINCT CASE WHEN (o.order_purchase_timestamp >= '2018-07-01' AND o.order_purchase_timestamp < '2018-08-01') THEN o.order_id END) AS baseline_orders, ROUND(SUM(CASE WHEN (o.order_purchase_timestamp >= '2018-07-01' AND o.order_purchase_timestamp < '2018-08-01') THEN COALESCE(i.price,0) ELSE 0 END),2) AS baseline_sales, COUNT(DISTINCT CASE WHEN (o.order_purchase_timestamp >= '2018-08-01' AND o.order_purchase_timestamp < '2018-09-01') THEN o.order_id END) AS target_orders, ROUND(SUM(CASE WHEN (o.order_purchase_timestamp >= '2018-08-01' AND o.order_purchase_timestamp < '2018-09-01') THEN COALESCE(i.price,0) ELSE 0 END),2) AS target_sales FROM orders o LEFT JOIN order_items i ON o.order_id=i.order_id WHERE (o.order_purchase_timestamp >= '2018-07-01' AND o.order_purchase_timestamp < '2018-08-01') OR (o.order_purchase_timestamp >= '2018-08-01' AND o.order_purchase_timestamp < '2018-09-01')",
+      "query_id": "3a96a9b203bd4497a855c7ba83267581",
+      "columns": [
+        "baseline_orders",
+        "baseline_sales",
+        "target_orders",
+        "target_sales"
+      ],
+      "rows": [
+        [
+          6292,
+          895507.22,
+          6512,
+          854686.33
+        ]
+      ],
+      "elapsed_seconds": 0.125,
+      "attempts": 1
+    },
+    {
+      "task": "category_contributions",
+      "sql": "SELECT p.product_category_name, ROUND(SUM(CASE WHEN (o.order_purchase_timestamp >= '2018-08-01' AND o.order_purchase_timestamp < '2018-09-01') THEN i.price ELSE -i.price END),2) AS delta_brl FROM order_items i JOIN orders o ON i.order_id=o.order_id LEFT JOIN products p ON i.product_id=p.product_id WHERE (o.order_purchase_timestamp >= '2018-07-01' AND o.order_purchase_timestamp < '2018-08-01') OR (o.order_purchase_timestamp >= '2018-08-01' AND o.order_purchase_timestamp < '2018-09-01') GROUP BY p.product_category_name HAVING ROUND(SUM(CASE WHEN (o.order_purchase_timestamp >= '2018-08-01' AND o.order_purchase_timestamp < '2018-09-01') THEN i.price ELSE -i.price END),2) < 0 ORDER BY delta_brl, p.product_category_name NULLS LAST LIMIT 5",
+      "query_id": "75b1f4cb82ec46e8b37843bfa2ebb0d4",
+      "columns": [
+        "product_category_name",
+        "delta_brl"
+      ],
+      "rows": [
+        [
+          "relogios_presentes",
+          -23935.53
+        ],
+        [
+          "cool_stuff",
+          -14197.03
+        ],
+        [
+          "ferramentas_jardim",
+          -9741.44
+        ],
+        [
+          "moveis_escritorio",
+          -7016.4
+        ],
+        [
+          "telefonia_fixa",
+          -6595.22
+        ]
+      ],
+      "elapsed_seconds": 0.078,
+      "attempts": 1
+    },
+    {
+      "task": "seller_sales_declines",
+      "sql": "SELECT i.seller_id AS dimension_key, ROUND(SUM(CASE WHEN (o.order_purchase_timestamp >= '2018-08-01' AND o.order_purchase_timestamp < '2018-09-01') THEN i.price ELSE -i.price END),2) AS change_value FROM order_items i JOIN orders o ON i.order_id=o.order_id LEFT JOIN products p ON i.product_id=p.product_id WHERE ((o.order_purchase_timestamp >= '2018-07-01' AND o.order_purchase_timestamp < '2018-08-01') OR (o.order_purchase_timestamp >= '2018-08-01' AND o.order_purchase_timestamp < '2018-09-01')) AND p.product_category_name = 'relogios_presentes' GROUP BY i.seller_id HAVING ROUND(SUM(CASE WHEN (o.order_purchase_timestamp >= '2018-08-01' AND o.order_purchase_timestamp < '2018-09-01') THEN i.price ELSE -i.price END),2) < 0 ORDER BY change_value, i.seller_id NULLS LAST LIMIT 5",
+      "query_id": "1803d96d69b44477a49ddc527c18e035",
+      "columns": [
+        "dimension_key",
+        "change_value"
+      ],
+      "rows": [
+        [
+          "2eb70248d66e0e3ef83659f71b244378",
+          -13036.28
+        ],
+        [
+          "966cb4760537b1404caedd472cc610a5",
+          -7370.7
+        ],
+        [
+          "612170e34b97004b3ba37eae81836b4c",
+          -4690.7
+        ],
+        [
+          "c3acdfac4e3e97ff87529454fbc03642",
+          -3898.0
+        ],
+        [
+          "fa1c13f2614d7b5c4749cbc52fecda94",
+          -3464.76
+        ]
+      ],
+      "elapsed_seconds": 0.079,
+      "attempts": 1
+    }
+  ],
+  "drivers": {
+    "baseline_orders": 6292,
+    "target_orders": 6512,
+    "baseline_sales_brl": "895507.22",
+    "target_sales_brl": "854686.33",
+    "baseline_average_brl": "142.32",
+    "target_average_brl": "131.25",
+    "sales_change_brl": "-40820.89",
+    "volume_contribution_brl": "30092.99",
+    "average_contribution_brl": "-70913.88"
+  },
+  "decisions": [
+    {
+      "task": "monthly_drivers",
+      "reason": "Need to compute order volume, average merchandise per order, and decompose sales change for 2018-08 vs 2018-07; monthly_drivers is the only allowed and available query for this comparison."
+    },
+    {
+      "task": "category_contributions",
+      "reason": "Order volume rose (6292→6512) while sales declined (895,507.22→854,686.33 BRL), so the decline is negative and requires drilling into negative category contributions."
+    },
+    {
+      "task": "seller_sales_declines",
+      "reason": "Sales declined (895,507.22 to 854,686.33) despite higher orders, and the leading declining category is relogios_presentes (-23,935.53). To complete the declining drill-down, we now rank seller merchandise declines within this leading declining category."
+    }
+  ],
+  "status": "completed",
+  "report_validation": {
+    "model_fields_match": true,
+    "rejected_fields": []
+  },
+  "answer": "### 2018-08 对比 2018-07\n商品金额**下降**，差额为 **-40820.89 BRL**。\n\n| 月份 | 订单量 | 商品金额（BRL） | 每单商品金额（BRL） |\n|---|---:|---:|---:|\n| 2018-07 | 6,292 | 895507.22 | 142.32 |\n| 2018-08 | 6,512 | 854686.33 | 131.25 |\n\n订单量变化贡献 **30092.99 BRL**，每单商品金额变化贡献 **-70913.88 BRL**。\n订单量贡献用订单数差乘两期平均每单金额。每单金额贡献为总差额减订单量贡献，包含分币舍入差。\n\n**品类下降排行（BRL）**\n- `relogios_presentes`：-23,935.53 BRL\n- `cool_stuff`：-14,197.03 BRL\n- `ferramentas_jardim`：-9,741.44 BRL\n- `moveis_escritorio`：-7,016.40 BRL\n- `telefonia_fixa`：-6,595.22 BRL\n\n**品类内卖家下降排行（BRL）**\n筛选品类：`relogios_presentes`\n- `2eb70248d66e0e3ef83659f71b244378`：-13,036.28 BRL\n- `966cb4760537b1404caedd472cc610a5`：-7,370.70 BRL\n- `612170e34b97004b3ba37eae81836b4c`：-4,690.70 BRL\n- `c3acdfac4e3e97ff87529454fbc03642`：-3,898.00 BRL\n- `fa1c13f2614d7b5c4749cbc52fecda94`：-3,464.76 BRL\n\n查询证据：`3a96a9b203bd4497a855c7ba83267581`、`75b1f4cb82ec46e8b37843bfa2ebb0d4`、`1803d96d69b44477a49ddc527c18e035`\n\n按下单月份统计全部记录状态，商品金额不含运费。一个订单可涉及多个品类或卖家，分组订单量不可相加。变化贡献是算术拆解，数据缺少完整成本和广告投入。",
+  "docker_review": {
+    "drivers": {
+      "baseline_orders": 6292,
+      "target_orders": 6512,
+      "baseline_sales_brl": "895507.22",
+      "target_sales_brl": "854686.33",
+      "baseline_average_brl": "142.32",
+      "target_average_brl": "131.25",
+      "sales_change_brl": "-40820.89",
+      "volume_contribution_brl": "30092.99",
+      "average_contribution_brl": "-70913.88"
+    },
+    "container_id": "redacted-for-public-release",
+    "image_id": "redacted-for-public-release",
+    "network": "none",
+    "executor": "DeepAnalyze chat_v2",
+    "checks": [
+      {
+        "task": "monthly_drivers",
+        "query_id": "3a96a9b203bd4497a855c7ba83267581",
+        "matched": true
+      },
+      {
+        "task": "category_contributions",
+        "query_id": "75b1f4cb82ec46e8b37843bfa2ebb0d4",
+        "matched": true
+      },
+      {
+        "task": "seller_sales_declines",
+        "query_id": "1803d96d69b44477a49ddc527c18e035",
+        "matched": true
+      }
+    ],
+    "passed": true,
+    "drivers_match": true
+  },
+  "usage": [
+    {
+      "completion_tokens": 58,
+      "prompt_tokens": 209,
+      "total_tokens": 267,
+      "completion_tokens_details": null,
+      "prompt_tokens_details": {
+        "audio_tokens": null,
+        "cache_write_tokens": null,
+        "cached_tokens": 0,
+        "image_tokens": null,
+        "text_tokens": null
+      },
+      "prompt_cache_hit_tokens": 0,
+      "prompt_cache_miss_tokens": 209
+    },
+    {
+      "completion_tokens": 61,
+      "prompt_tokens": 606,
+      "total_tokens": 667,
+      "completion_tokens_details": null,
+      "prompt_tokens_details": {
+        "audio_tokens": null,
+        "cache_write_tokens": null,
+        "cached_tokens": 128,
+        "image_tokens": null,
+        "text_tokens": null
+      },
+      "prompt_cache_hit_tokens": 128,
+      "prompt_cache_miss_tokens": 478
+    },
+    {
+      "completion_tokens": 81,
+      "prompt_tokens": 990,
+      "total_tokens": 1071,
+      "completion_tokens_details": null,
+      "prompt_tokens_details": {
+        "audio_tokens": null,
+        "cache_write_tokens": null,
+        "cached_tokens": 128,
+        "image_tokens": null,
+        "text_tokens": null
+      },
+      "prompt_cache_hit_tokens": 128,
+      "prompt_cache_miss_tokens": 862
+    },
+    {
+      "completion_tokens": 148,
+      "prompt_tokens": 222,
+      "total_tokens": 370,
+      "completion_tokens_details": null,
+      "prompt_tokens_details": {
+        "audio_tokens": null,
+        "cache_write_tokens": null,
+        "cached_tokens": 0,
+        "image_tokens": null,
+        "text_tokens": null
+      },
+      "prompt_cache_hit_tokens": 0,
+      "prompt_cache_miss_tokens": 222
+    }
+  ]
+}

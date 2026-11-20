@@ -1,0 +1,84 @@
+{
+  "question": "For all recorded orders, give order count, total item sales and average item sales per order.",
+  "scenario": "August 2018 versus July 2018",
+  "next_task": "finish",
+  "evidence": [
+    {
+      "task": "overview",
+      "sql": "SELECT COUNT(DISTINCT o.order_id) AS orders, ROUND(SUM(i.price),2) AS sales_brl, ROUND(SUM(i.price)/COUNT(DISTINCT o.order_id),2) AS average_brl FROM orders o LEFT JOIN order_items i ON o.order_id=i.order_id",
+      "columns": [
+        "orders",
+        "sales_brl",
+        "average_brl"
+      ],
+      "rows": [
+        [
+          99441,
+          13591643.7,
+          136.68
+        ]
+      ],
+      "query_id": "8e2718c886cb4e9fa974e616a036397b",
+      "elapsed_seconds": 0.109
+    }
+  ],
+  "decisions": [
+    {
+      "task": "overview",
+      "reason": "The question asks for all-time order count, total item sales, and average item sales per order, which matches the 'overview' available query."
+    },
+    {
+      "task": "finish",
+      "reason": "The overview query already provides the requested order count (99,441), total item sales (13,591,643.70 BRL), and average item sales per order (136.68 BRL) for all recorded orders. The scenario is context only and no period comparison is requested."
+    }
+  ],
+  "status": "completed",
+  "answer": "针对所有已记录订单：订单数为 99,441；总商品销售额为 13,591,643.70 BRL；每单平均商品销售额为 136.68 BRL。以上数据来自查询 ID 8e2718c886cb4e9fa974e616a036397b。",
+  "usage": [
+    {
+      "completion_tokens": 49,
+      "prompt_tokens": 242,
+      "total_tokens": 291,
+      "completion_tokens_details": null,
+      "prompt_tokens_details": {
+        "audio_tokens": null,
+        "cache_write_tokens": null,
+        "cached_tokens": 0,
+        "image_tokens": null,
+        "text_tokens": null
+      },
+      "prompt_cache_hit_tokens": 0,
+      "prompt_cache_miss_tokens": 242
+    },
+    {
+      "completion_tokens": 75,
+      "prompt_tokens": 373,
+      "total_tokens": 448,
+      "completion_tokens_details": null,
+      "prompt_tokens_details": {
+        "audio_tokens": null,
+        "cache_write_tokens": null,
+        "cached_tokens": 128,
+        "image_tokens": null,
+        "text_tokens": null
+      },
+      "prompt_cache_hit_tokens": 128,
+      "prompt_cache_miss_tokens": 245
+    },
+    {
+      "completion_tokens": 64,
+      "prompt_tokens": 362,
+      "total_tokens": 426,
+      "completion_tokens_details": null,
+      "prompt_tokens_details": {
+        "audio_tokens": null,
+        "cache_write_tokens": null,
+        "cached_tokens": 0,
+        "image_tokens": null,
+        "text_tokens": null
+      },
+      "prompt_cache_hit_tokens": 0,
+      "prompt_cache_miss_tokens": 362
+    }
+  ]
+}

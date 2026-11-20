@@ -1,0 +1,143 @@
+.stApp {
+    background: #faf9f6;
+}
+
+[data-testid="stHeader"] {
+    background: transparent;
+}
+
+[data-testid="stMainBlockContainer"] {
+    max-width: 76rem;
+    padding-top: 2.65rem;
+    padding-inline: clamp(1rem, 3vw, 3rem);
+}
+
+[data-testid="stSidebar"] {
+    background: #f1f0ea;
+    border-right: 1px solid #e0dfd7;
+}
+
+[data-testid="stSidebar"] [data-baseweb="select"] > div {
+    background: #fff;
+}
+
+.commerce-brand {
+    color: #173b32;
+    font-family: "Geist", system-ui, sans-serif;
+    font-size: 1.4rem;
+    font-weight: 750;
+    letter-spacing: -0.06em;
+}
+
+.st-key-workspace_navigation {
+    padding-bottom: 0.65rem;
+    border-bottom: 1px solid #e5e2d9;
+}
+
+.st-key-workspace_navigation [role="radiogroup"] {
+    gap: 0.25rem 1rem;
+    flex-wrap: wrap;
+}
+
+.st-key-ask_workspace {
+    width: min(100%, 46rem);
+    margin: 0 auto;
+}
+
+.ask-intro {
+    margin: clamp(1rem, 4vh, 2.75rem) 0 0.35rem;
+    padding: clamp(1.35rem, 4vw, 2.75rem);
+    background: radial-gradient(ellipse at top right, #326a56, transparent 65%), #153c32;
+    border-radius: 1rem;
+}
+
+.ask-intro h1 {
+    color: #fffaf0;
+    font-family: "Instrument Serif", "Noto Serif SC", "Songti SC", "SimSun", serif;
+    font-size: clamp(2rem, 5vw, 3.4rem);
+    font-weight: 650;
+    line-height: 1.18;
+    letter-spacing: -0.035em;
+    padding: 0 0 0.65rem;
+}
+
+.ask-intro p {
+    color: #e1eee5;
+    margin: 0;
+}
+
+.st-key-ask_workspace [data-testid="stForm"] {
+    background: #fff;
+    border: 1px solid #ddded4;
+    border-radius: 1rem;
+    padding: 1rem;
+    box-shadow: 0 8px 28px #233a2610;
+}
+
+.st-key-ask_workspace textarea {
+    background: #f8f8f4;
+}
+
+.st-key-ask_workspace button {
+    border-radius: 0.55rem;
+}
+
+[data-testid="stMetric"],
+.st-key-result_panel,
+.st-key-question_answer {
+    background: #fff;
+    border: 1px solid #e1e2d8;
+    border-radius: 0.75rem;
+}
+
+.st-key-business_summary {
+    background: #f1f7f2;
+    border: 1px solid #cbded1;
+    border-left: 4px solid #176853;
+    border-radius: 0.8rem;
+}
+
+.st-key-business_summary h3,
+.st-key-business_summary strong {
+    color: #174b3b;
+}
+
+.st-key-business_summary code {
+    overflow-wrap: anywhere;
+    white-space: normal;
+}
+
+[data-testid="stMetricValue"] {
+    font-variant-numeric: tabular-nums;
+    font-size: clamp(1.15rem, 2.05vw, 1.85rem);
+}
+
+[class*="st-key-metric_decrease_"] [data-testid="stMetricValue"] {
+    color: #ab430a;
+}
+
+[class*="st-key-metric_increase_"] [data-testid="stMetricValue"] {
+    color: #176853;
+}
+
+.st-key-result_panel [data-baseweb="tab-list"] {
+    gap: 1rem;
+}
+
+.st-key-result_panel [data-baseweb="tab"] {
+    padding: 0.7rem 0.35rem;
+}
+
+@media (max-width: 640px) {
+    [data-testid="stMainBlockContainer"] {
+        padding-inline: 1rem;
+    }
+
+    .ask-intro {
+        margin-top: 1.4rem;
+    }
+
+    [data-testid="stMetricValue"] {
+        font-size: 1.35rem;
+    }
+}

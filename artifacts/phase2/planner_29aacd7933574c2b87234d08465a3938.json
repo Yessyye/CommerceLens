@@ -1,0 +1,131 @@
+{
+  "question": "Compare merchandise sales for the scenario's two periods. If sales fell, identify the largest negative category contributions.",
+  "scenario": "August 2018 versus July 2018",
+  "next_task": "finish",
+  "evidence": [
+    {
+      "task": "jul_aug_change",
+      "sql": "SELECT ROUND(SUM(CASE WHEN o.order_purchase_timestamp >= '2018-08-01' THEN i.price ELSE -i.price END),2) AS delta_brl FROM order_items i JOIN orders o ON i.order_id=o.order_id WHERE o.order_purchase_timestamp >= '2018-07-01' AND o.order_purchase_timestamp < '2018-09-01'",
+      "columns": [
+        "delta_brl"
+      ],
+      "rows": [
+        [
+          -40820.89
+        ]
+      ],
+      "query_id": "7e627ffb5f3b4fa29c7ad345c33c6c51",
+      "elapsed_seconds": 0.063
+    },
+    {
+      "task": "category_contributions",
+      "sql": "SELECT p.product_category_name, ROUND(SUM(CASE WHEN o.order_purchase_timestamp >= '2018-08-01' THEN i.price ELSE -i.price END),2) AS delta_brl FROM order_items i JOIN orders o ON i.order_id=o.order_id LEFT JOIN products p ON i.product_id=p.product_id WHERE o.order_purchase_timestamp >= '2018-07-01' AND o.order_purchase_timestamp < '2018-09-01' GROUP BY p.product_category_name ORDER BY delta_brl LIMIT 5",
+      "columns": [
+        "product_category_name",
+        "delta_brl"
+      ],
+      "rows": [
+        [
+          "relogios_presentes",
+          -23935.53
+        ],
+        [
+          "cool_stuff",
+          -14197.03
+        ],
+        [
+          "ferramentas_jardim",
+          -9741.44
+        ],
+        [
+          "moveis_escritorio",
+          -7016.4
+        ],
+        [
+          "telefonia_fixa",
+          -6595.22
+        ]
+      ],
+      "query_id": "0bb863bccc09408db66dd267a50d4f4f",
+      "elapsed_seconds": 0.062
+    }
+  ],
+  "decisions": [
+    {
+      "task": "jul_aug_change",
+      "reason": "Need to measure the observed change in merchandise sales between July and August 2018 before investigating category contributions."
+    },
+    {
+      "task": "category_contributions",
+      "reason": "The measured change from July to August is negative (-40,820.89 BRL), so sales fell. The next step is to identify the largest negative category contributions per the question."
+    },
+    {
+      "task": "finish",
+      "reason": "Merchandise sales fell by 40,820.89 BRL in August 2018 vs July 2018. The largest negative category contributions were identified: relogios_presentes (-23,935.53), cool_stuff (-14,197.03), ferramentas_jardim (-9,741.44), moveis_escritorio (-7,016.40), and telefonia_fixa (-6,595.22). Evidence is sufficient to answer the question."
+    }
+  ],
+  "status": "completed",
+  "answer": "2018 年 8 月与 2018 年 7 月相比，商品销售额下降了 40,820.89 巴西雷亚尔（证据查询 ID：7e627ffb5f3b4fa29c7ad345c33c6c51）。\n\n最大的负向品类贡献如下（证据查询 ID：0bb863bccc09408db66dd267a50d4f4f）：\n\n1. relogios_presentes：-23,935.53 巴西雷亚尔\n2. cool_stuff：-14,197.03 巴西雷亚尔\n3. ferramentas_jardim：-9,741.44 巴西雷亚尔\n4. moveis_escritorio：-7,016.40 巴西雷亚尔\n5. telefonia_fixa：-6,595.22 巴西雷亚尔\n\n以上仅基于所提供的数据，说明销售额变化及品类贡献情况，不推断原因。",
+  "usage": [
+    {
+      "completion_tokens": 36,
+      "prompt_tokens": 207,
+      "total_tokens": 243,
+      "completion_tokens_details": null,
+      "prompt_tokens_details": {
+        "audio_tokens": null,
+        "cache_write_tokens": null,
+        "cached_tokens": 0,
+        "image_tokens": null,
+        "text_tokens": null
+      },
+      "prompt_cache_hit_tokens": 0,
+      "prompt_cache_miss_tokens": 207
+    },
+    {
+      "completion_tokens": 50,
+      "prompt_tokens": 367,
+      "total_tokens": 417,
+      "completion_tokens_details": null,
+      "prompt_tokens_details": {
+        "audio_tokens": null,
+        "cache_write_tokens": null,
+        "cached_tokens": 128,
+        "image_tokens": null,
+        "text_tokens": null
+      },
+      "prompt_cache_hit_tokens": 128,
+      "prompt_cache_miss_tokens": 239
+    },
+    {
+      "completion_tokens": 121,
+      "prompt_tokens": 595,
+      "total_tokens": 716,
+      "completion_tokens_details": null,
+      "prompt_tokens_details": {
+        "audio_tokens": null,
+        "cache_write_tokens": null,
+        "cached_tokens": 128,
+        "image_tokens": null,
+        "text_tokens": null
+      },
+      "prompt_cache_hit_tokens": 128,
+      "prompt_cache_miss_tokens": 467
+    },
+    {
+      "completion_tokens": 211,
+      "prompt_tokens": 716,
+      "total_tokens": 927,
+      "completion_tokens_details": null,
+      "prompt_tokens_details": {
+        "audio_tokens": null,
+        "cache_write_tokens": null,
+        "cached_tokens": 0,
+        "image_tokens": null,
+        "text_tokens": null
+      },
+      "prompt_cache_hit_tokens": 0,
+      "prompt_cache_miss_tokens": 716
+    }
+  ]
+}

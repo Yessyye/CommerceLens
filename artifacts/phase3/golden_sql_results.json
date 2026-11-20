@@ -1,0 +1,370 @@
+[
+  {
+    "id": "overview",
+    "question": "How many orders, how much merchandise value, and what average value per order?",
+    "sql": "SELECT COUNT(DISTINCT o.order_id) AS orders, ROUND(SUM(i.price),2) AS sales_brl, ROUND(SUM(i.price)/COUNT(DISTINCT o.order_id),2) AS average_brl FROM orders o LEFT JOIN order_items i ON o.order_id=i.order_id",
+    "result": {
+      "columns": [
+        "orders",
+        "sales_brl",
+        "average_brl"
+      ],
+      "rows": [
+        [
+          99441,
+          13591643.7,
+          136.68
+        ]
+      ],
+      "query_id": "99e9a6192f3240f4886f450233f5374a",
+      "elapsed_seconds": 0.375
+    },
+    "expected": [
+      [
+        99441,
+        "13591643.70",
+        "136.68"
+      ]
+    ],
+    "passed": true
+  },
+  {
+    "id": "top_categories",
+    "question": "Which five product categories contributed most merchandise value?",
+    "sql": "SELECT p.product_category_name, ROUND(SUM(i.price),2) AS sales_brl FROM order_items i LEFT JOIN products p ON i.product_id=p.product_id GROUP BY p.product_category_name ORDER BY sales_brl DESC LIMIT 5",
+    "result": {
+      "columns": [
+        "product_category_name",
+        "sales_brl"
+      ],
+      "rows": [
+        [
+          "beleza_saude",
+          1258681.34
+        ],
+        [
+          "relogios_presentes",
+          1205005.68
+        ],
+        [
+          "cama_mesa_banho",
+          1036988.68
+        ],
+        [
+          "esporte_lazer",
+          988048.97
+        ],
+        [
+          "informatica_acessorios",
+          911954.32
+        ]
+      ],
+      "query_id": "72c1a28bac2c45b896cf74a99b3ccd68",
+      "elapsed_seconds": 0.094
+    },
+    "expected": [
+      [
+        "beleza_saude",
+        "1258681.34"
+      ],
+      [
+        "relogios_presentes",
+        "1205005.68"
+      ],
+      [
+        "cama_mesa_banho",
+        "1036988.68"
+      ],
+      [
+        "esporte_lazer",
+        "988048.97"
+      ],
+      [
+        "informatica_acessorios",
+        "911954.32"
+      ]
+    ],
+    "passed": true
+  },
+  {
+    "id": "jul_aug_change",
+    "question": "How much did merchandise value change from July to August 2018?",
+    "sql": "SELECT ROUND(SUM(CASE WHEN o.order_purchase_timestamp >= '2018-08-01' THEN i.price ELSE -i.price END),2) AS delta_brl FROM order_items i JOIN orders o ON i.order_id=o.order_id WHERE o.order_purchase_timestamp >= '2018-07-01' AND o.order_purchase_timestamp < '2018-09-01'",
+    "result": {
+      "columns": [
+        "delta_brl"
+      ],
+      "rows": [
+        [
+          -40820.89
+        ]
+      ],
+      "query_id": "d2e4d91cf3e34cadbfcaca19b0fb41ba",
+      "elapsed_seconds": 0.125
+    },
+    "expected": [
+      [
+        "-40820.89"
+      ]
+    ],
+    "passed": true
+  },
+  {
+    "id": "category_contributions",
+    "question": "Which categories contributed the largest declines in that comparison?",
+    "sql": "SELECT p.product_category_name, ROUND(SUM(CASE WHEN o.order_purchase_timestamp >= '2018-08-01' THEN i.price ELSE -i.price END),2) AS delta_brl FROM order_items i JOIN orders o ON i.order_id=o.order_id LEFT JOIN products p ON i.product_id=p.product_id WHERE o.order_purchase_timestamp >= '2018-07-01' AND o.order_purchase_timestamp < '2018-09-01' GROUP BY p.product_category_name ORDER BY delta_brl LIMIT 5",
+    "result": {
+      "columns": [
+        "product_category_name",
+        "delta_brl"
+      ],
+      "rows": [
+        [
+          "relogios_presentes",
+          -23935.53
+        ],
+        [
+          "cool_stuff",
+          -14197.03
+        ],
+        [
+          "ferramentas_jardim",
+          -9741.44
+        ],
+        [
+          "moveis_escritorio",
+          -7016.4
+        ],
+        [
+          "telefonia_fixa",
+          -6595.22
+        ]
+      ],
+      "query_id": "467987bd517a4c57a60b98f38aea447f",
+      "elapsed_seconds": 0.109
+    },
+    "expected": [
+      [
+        "relogios_presentes",
+        "-23935.53"
+      ],
+      [
+        "cool_stuff",
+        "-14197.03"
+      ],
+      [
+        "ferramentas_jardim",
+        "-9741.44"
+      ],
+      [
+        "moveis_escritorio",
+        "-7016.40"
+      ],
+      [
+        "telefonia_fixa",
+        "-6595.22"
+      ]
+    ],
+    "passed": true
+  },
+  {
+    "id": "order_status_counts",
+    "question": "How many orders are in each recorded status?",
+    "sql": "SELECT order_status, COUNT(*) AS n FROM orders GROUP BY order_status ORDER BY order_status",
+    "result": {
+      "columns": [
+        "order_status",
+        "n"
+      ],
+      "rows": [
+        [
+          "approved",
+          2
+        ],
+        [
+          "canceled",
+          625
+        ],
+        [
+          "created",
+          5
+        ],
+        [
+          "delivered",
+          96478
+        ],
+        [
+          "invoiced",
+          314
+        ],
+        [
+          "processing",
+          301
+        ],
+        [
+          "shipped",
+          1107
+        ],
+        [
+          "unavailable",
+          609
+        ]
+      ],
+      "query_id": "26ba940a9c9b4ea38e30127fbc62f831",
+      "elapsed_seconds": 0.063
+    },
+    "expected": [
+      [
+        "approved",
+        2
+      ],
+      [
+        "canceled",
+        625
+      ],
+      [
+        "created",
+        5
+      ],
+      [
+        "delivered",
+        96478
+      ],
+      [
+        "invoiced",
+        314
+      ],
+      [
+        "processing",
+        301
+      ],
+      [
+        "shipped",
+        1107
+      ],
+      [
+        "unavailable",
+        609
+      ]
+    ],
+    "passed": true
+  },
+  {
+    "id": "freight_total",
+    "question": "What is total item freight in BRL?",
+    "sql": "SELECT ROUND(SUM(freight_value),2) FROM order_items",
+    "result": {
+      "columns": [
+        "round(sum(freight_value), 2)"
+      ],
+      "rows": [
+        [
+          2251909.54
+        ]
+      ],
+      "query_id": "6900068b73444b1d9b70bfa2c8c100a0",
+      "elapsed_seconds": 0.078
+    },
+    "expected": [
+      [
+        "2251909.54"
+      ]
+    ],
+    "passed": true
+  },
+  {
+    "id": "top_seller",
+    "question": "Which seller has the highest merchandise value?",
+    "sql": "SELECT seller_id, ROUND(SUM(price),2) AS sales FROM order_items GROUP BY seller_id ORDER BY sales DESC, seller_id LIMIT 1",
+    "result": {
+      "columns": [
+        "seller_id",
+        "sales"
+      ],
+      "rows": [
+        [
+          "4869f7a5dfa277a7dca6462dcf3b52b2",
+          229472.63
+        ]
+      ],
+      "query_id": "a18bf12fac3a4376a21c1b3f6559c563",
+      "elapsed_seconds": 0.062
+    },
+    "expected": [
+      [
+        "4869f7a5dfa277a7dca6462dcf3b52b2",
+        "229472.63"
+      ]
+    ],
+    "passed": true
+  },
+  {
+    "id": "payment_total",
+    "question": "What is total recorded payment value, including payment components?",
+    "sql": "SELECT ROUND(SUM(payment_value),2) FROM order_payments",
+    "result": {
+      "columns": [
+        "round(sum(payment_value), 2)"
+      ],
+      "rows": [
+        [
+          16008872.12
+        ]
+      ],
+      "query_id": "55f613a034174beba3247e6735a93e87",
+      "elapsed_seconds": 0.078
+    },
+    "expected": [
+      [
+        "16008872.12"
+      ]
+    ],
+    "passed": true
+  },
+  {
+    "id": "item_count",
+    "question": "How many order item records are present?",
+    "sql": "SELECT COUNT(*) FROM order_items",
+    "result": {
+      "columns": [
+        "count_star()"
+      ],
+      "rows": [
+        [
+          112650
+        ]
+      ],
+      "query_id": "9d251a2ab2834d51b4b6d7a4d1a50fb7",
+      "elapsed_seconds": 0.063
+    },
+    "expected": [
+      [
+        112650
+      ]
+    ],
+    "passed": true
+  },
+  {
+    "id": "product_count",
+    "question": "How many product identifiers are present?",
+    "sql": "SELECT COUNT(DISTINCT product_id) FROM products",
+    "result": {
+      "columns": [
+        "count(DISTINCT product_id)"
+      ],
+      "rows": [
+        [
+          32951
+        ]
+      ],
+      "query_id": "f20847db180c4e4ebc5013ba9b448482",
+      "elapsed_seconds": 0.078
+    },
+    "expected": [
+      [
+        32951
+      ]
+    ],
+    "passed": true
+  }
+]

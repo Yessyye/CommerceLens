@@ -1,0 +1,285 @@
+[
+  {
+    "case": "A",
+    "periods": {
+      "baseline": "2017-11",
+      "target": "2017-12"
+    },
+    "trace": "artifacts\\phase2\\planner_b15b435f72ab4f5a99bf390c2da480c0.json",
+    "passed": true,
+    "actual_path": [
+      "monthly_drivers",
+      "category_order_declines",
+      "seller_order_declines"
+    ],
+    "expected_path": [
+      "monthly_drivers",
+      "category_order_declines",
+      "seller_order_declines"
+    ],
+    "agent_seconds": 20.125,
+    "agent_queries": 3,
+    "tokens": 2540,
+    "fixed_sql_seconds": 0.328,
+    "fixed_sql_queries": 3,
+    "fixed_sql_correct": true,
+    "fixed_sql_evidence": [
+      {
+        "task": "monthly_drivers",
+        "sql": "SELECT COUNT(DISTINCT CASE WHEN (o.order_purchase_timestamp >= '2017-11-01' AND o.order_purchase_timestamp < '2017-12-01') THEN o.order_id END) AS baseline_orders, ROUND(SUM(CASE WHEN (o.order_purchase_timestamp >= '2017-11-01' AND o.order_purchase_timestamp < '2017-12-01') THEN COALESCE(i.price,0) ELSE 0 END),2) AS baseline_sales, COUNT(DISTINCT CASE WHEN (o.order_purchase_timestamp >= '2017-12-01' AND o.order_purchase_timestamp < '2018-01-01') THEN o.order_id END) AS target_orders, ROUND(SUM(CASE WHEN (o.order_purchase_timestamp >= '2017-12-01' AND o.order_purchase_timestamp < '2018-01-01') THEN COALESCE(i.price,0) ELSE 0 END),2) AS target_sales FROM orders o LEFT JOIN order_items i ON o.order_id=i.order_id WHERE (o.order_purchase_timestamp >= '2017-11-01' AND o.order_purchase_timestamp < '2017-12-01') OR (o.order_purchase_timestamp >= '2017-12-01' AND o.order_purchase_timestamp < '2018-01-01')",
+        "columns": [
+          "baseline_orders",
+          "baseline_sales",
+          "target_orders",
+          "target_sales"
+        ],
+        "rows": [
+          [
+            7544,
+            1010271.37,
+            5673,
+            743914.17
+          ]
+        ],
+        "query_id": "bd9b0faa0b5d4af6b497c61bf720d2c5",
+        "elapsed_seconds": 0.094
+      },
+      {
+        "task": "category_order_declines",
+        "sql": "SELECT p.product_category_name AS dimension_key, COUNT(DISTINCT CASE WHEN (o.order_purchase_timestamp >= '2017-12-01' AND o.order_purchase_timestamp < '2018-01-01') THEN o.order_id END) - COUNT(DISTINCT CASE WHEN (o.order_purchase_timestamp >= '2017-11-01' AND o.order_purchase_timestamp < '2017-12-01') THEN o.order_id END) AS change_value FROM order_items i JOIN orders o ON i.order_id=o.order_id LEFT JOIN products p ON i.product_id=p.product_id WHERE ((o.order_purchase_timestamp >= '2017-11-01' AND o.order_purchase_timestamp < '2017-12-01') OR (o.order_purchase_timestamp >= '2017-12-01' AND o.order_purchase_timestamp < '2018-01-01')) GROUP BY p.product_category_name HAVING COUNT(DISTINCT CASE WHEN (o.order_purchase_timestamp >= '2017-12-01' AND o.order_purchase_timestamp < '2018-01-01') THEN o.order_id END) - COUNT(DISTINCT CASE WHEN (o.order_purchase_timestamp >= '2017-11-01' AND o.order_purchase_timestamp < '2017-12-01') THEN o.order_id END) < 0 ORDER BY change_value, p.product_category_name NULLS LAST LIMIT 5",
+        "columns": [
+          "dimension_key",
+          "change_value"
+        ],
+        "rows": [
+          [
+            "cama_mesa_banho",
+            -336
+          ],
+          [
+            "moveis_decoracao",
+            -232
+          ],
+          [
+            "informatica_acessorios",
+            -192
+          ],
+          [
+            "ferramentas_jardim",
+            -188
+          ],
+          [
+            "esporte_lazer",
+            -117
+          ]
+        ],
+        "query_id": "cf88af6e86e046a1b1f699a37588752e",
+        "elapsed_seconds": 0.109
+      },
+      {
+        "task": "seller_order_declines",
+        "sql": "SELECT i.seller_id AS dimension_key, COUNT(DISTINCT CASE WHEN (o.order_purchase_timestamp >= '2017-12-01' AND o.order_purchase_timestamp < '2018-01-01') THEN o.order_id END) - COUNT(DISTINCT CASE WHEN (o.order_purchase_timestamp >= '2017-11-01' AND o.order_purchase_timestamp < '2017-12-01') THEN o.order_id END) AS change_value FROM order_items i JOIN orders o ON i.order_id=o.order_id LEFT JOIN products p ON i.product_id=p.product_id WHERE ((o.order_purchase_timestamp >= '2017-11-01' AND o.order_purchase_timestamp < '2017-12-01') OR (o.order_purchase_timestamp >= '2017-12-01' AND o.order_purchase_timestamp < '2018-01-01')) AND p.product_category_name = 'cama_mesa_banho' GROUP BY i.seller_id HAVING COUNT(DISTINCT CASE WHEN (o.order_purchase_timestamp >= '2017-12-01' AND o.order_purchase_timestamp < '2018-01-01') THEN o.order_id END) - COUNT(DISTINCT CASE WHEN (o.order_purchase_timestamp >= '2017-11-01' AND o.order_purchase_timestamp < '2017-12-01') THEN o.order_id END) < 0 ORDER BY change_value, i.seller_id NULLS LAST LIMIT 5",
+        "columns": [
+          "dimension_key",
+          "change_value"
+        ],
+        "rows": [
+          [
+            "4a3ca9315b744ce9f8e9374361493884",
+            -74
+          ],
+          [
+            "8160255418d5aaa7dbdc9f4c64ebda44",
+            -49
+          ],
+          [
+            "54965bbe3e4f07ae045b90b0b8541f52",
+            -46
+          ],
+          [
+            "dc4a0fc896dc34b0d5bfec8438291c80",
+            -27
+          ],
+          [
+            "1835b56ce799e6a4dc4eddc053f04066",
+            -21
+          ]
+        ],
+        "query_id": "345a6ce1cf5c43c9b53afe48f0a52103",
+        "elapsed_seconds": 0.094
+      }
+    ],
+    "agent_numeric_correct": true,
+    "agent_citations_present": true,
+    "decomposition_balanced": true,
+    "docker_review_passed": true,
+    "automated_review_seconds": 0.0,
+    "human_review_seconds": null
+  },
+  {
+    "case": "B",
+    "periods": {
+      "baseline": "2018-04",
+      "target": "2018-02"
+    },
+    "trace": "artifacts\\phase2\\planner_bb1a3a183ff541b4a3c0f865cd6a6c73.json",
+    "passed": true,
+    "actual_path": [
+      "monthly_drivers",
+      "category_contributions",
+      "seller_sales_declines"
+    ],
+    "expected_path": [
+      "monthly_drivers",
+      "category_contributions",
+      "seller_sales_declines"
+    ],
+    "agent_seconds": 15.094,
+    "agent_queries": 3,
+    "tokens": 2367,
+    "fixed_sql_seconds": 0.281,
+    "fixed_sql_queries": 3,
+    "fixed_sql_correct": true,
+    "fixed_sql_evidence": [
+      {
+        "task": "monthly_drivers",
+        "sql": "SELECT COUNT(DISTINCT CASE WHEN (o.order_purchase_timestamp >= '2018-04-01' AND o.order_purchase_timestamp < '2018-05-01') THEN o.order_id END) AS baseline_orders, ROUND(SUM(CASE WHEN (o.order_purchase_timestamp >= '2018-04-01' AND o.order_purchase_timestamp < '2018-05-01') THEN COALESCE(i.price,0) ELSE 0 END),2) AS baseline_sales, COUNT(DISTINCT CASE WHEN (o.order_purchase_timestamp >= '2018-02-01' AND o.order_purchase_timestamp < '2018-03-01') THEN o.order_id END) AS target_orders, ROUND(SUM(CASE WHEN (o.order_purchase_timestamp >= '2018-02-01' AND o.order_purchase_timestamp < '2018-03-01') THEN COALESCE(i.price,0) ELSE 0 END),2) AS target_sales FROM orders o LEFT JOIN order_items i ON o.order_id=i.order_id WHERE (o.order_purchase_timestamp >= '2018-04-01' AND o.order_purchase_timestamp < '2018-05-01') OR (o.order_purchase_timestamp >= '2018-02-01' AND o.order_purchase_timestamp < '2018-03-01')",
+        "columns": [
+          "baseline_orders",
+          "baseline_sales",
+          "target_orders",
+          "target_sales"
+        ],
+        "rows": [
+          [
+            6939,
+            996647.75,
+            6728,
+            844178.71
+          ]
+        ],
+        "query_id": "2e100f96c1ac4cb1bacebda5cb18e54b",
+        "elapsed_seconds": 0.094
+      },
+      {
+        "task": "category_contributions",
+        "sql": "SELECT p.product_category_name, ROUND(SUM(CASE WHEN (o.order_purchase_timestamp >= '2018-02-01' AND o.order_purchase_timestamp < '2018-03-01') THEN i.price ELSE -i.price END),2) AS delta_brl FROM order_items i JOIN orders o ON i.order_id=o.order_id LEFT JOIN products p ON i.product_id=p.product_id WHERE (o.order_purchase_timestamp >= '2018-04-01' AND o.order_purchase_timestamp < '2018-05-01') OR (o.order_purchase_timestamp >= '2018-02-01' AND o.order_purchase_timestamp < '2018-03-01') GROUP BY p.product_category_name HAVING ROUND(SUM(CASE WHEN (o.order_purchase_timestamp >= '2018-02-01' AND o.order_purchase_timestamp < '2018-03-01') THEN i.price ELSE -i.price END),2) < 0 ORDER BY delta_brl, p.product_category_name NULLS LAST LIMIT 5",
+        "columns": [
+          "product_category_name",
+          "delta_brl"
+        ],
+        "rows": [
+          [
+            "relogios_presentes",
+            -29196.39
+          ],
+          [
+            "bebes",
+            -23836.02
+          ],
+          [
+            "moveis_decoracao",
+            -18146.49
+          ],
+          [
+            "pcs",
+            -13774.92
+          ],
+          [
+            "eletrodomesticos_2",
+            -11742.86
+          ]
+        ],
+        "query_id": "e04046d26f5f426cb3cbcac8a362f6e6",
+        "elapsed_seconds": 0.093
+      },
+      {
+        "task": "seller_sales_declines",
+        "sql": "SELECT i.seller_id AS dimension_key, ROUND(SUM(CASE WHEN (o.order_purchase_timestamp >= '2018-02-01' AND o.order_purchase_timestamp < '2018-03-01') THEN i.price ELSE -i.price END),2) AS change_value FROM order_items i JOIN orders o ON i.order_id=o.order_id LEFT JOIN products p ON i.product_id=p.product_id WHERE ((o.order_purchase_timestamp >= '2018-04-01' AND o.order_purchase_timestamp < '2018-05-01') OR (o.order_purchase_timestamp >= '2018-02-01' AND o.order_purchase_timestamp < '2018-03-01')) AND p.product_category_name = 'relogios_presentes' GROUP BY i.seller_id HAVING ROUND(SUM(CASE WHEN (o.order_purchase_timestamp >= '2018-02-01' AND o.order_purchase_timestamp < '2018-03-01') THEN i.price ELSE -i.price END),2) < 0 ORDER BY change_value, i.seller_id NULLS LAST LIMIT 5",
+        "columns": [
+          "dimension_key",
+          "change_value"
+        ],
+        "rows": [
+          [
+            "7d13fca15225358621be4086e1eb0964",
+            -10716.79
+          ],
+          [
+            "966cb4760537b1404caedd472cc610a5",
+            -6232.99
+          ],
+          [
+            "4869f7a5dfa277a7dca6462dcf3b52b2",
+            -3608.1
+          ],
+          [
+            "2bf6a2c1e71bbd29a4ad64e6d3c3629f",
+            -3386.0
+          ],
+          [
+            "522620dcb18a6b31cd7bdf73665113a9",
+            -2875.0
+          ]
+        ],
+        "query_id": "fc5f00c7ce8740cfae0ff0d27c4e38e4",
+        "elapsed_seconds": 0.078
+      }
+    ],
+    "agent_numeric_correct": true,
+    "agent_citations_present": true,
+    "decomposition_balanced": true,
+    "docker_review_passed": true,
+    "automated_review_seconds": 0.0,
+    "human_review_seconds": null
+  },
+  {
+    "case": "C",
+    "periods": {
+      "baseline": "2018-03",
+      "target": "2018-04"
+    },
+    "trace": "artifacts\\phase2\\planner_2b936e75a12a43149c1e4783393c54b6.json",
+    "passed": true,
+    "actual_path": [
+      "monthly_drivers"
+    ],
+    "expected_path": [
+      "monthly_drivers"
+    ],
+    "agent_seconds": 12.063,
+    "agent_queries": 1,
+    "tokens": 556,
+    "fixed_sql_seconds": 0.078,
+    "fixed_sql_queries": 1,
+    "fixed_sql_correct": true,
+    "fixed_sql_evidence": [
+      {
+        "task": "monthly_drivers",
+        "sql": "SELECT COUNT(DISTINCT CASE WHEN (o.order_purchase_timestamp >= '2018-03-01' AND o.order_purchase_timestamp < '2018-04-01') THEN o.order_id END) AS baseline_orders, ROUND(SUM(CASE WHEN (o.order_purchase_timestamp >= '2018-03-01' AND o.order_purchase_timestamp < '2018-04-01') THEN COALESCE(i.price,0) ELSE 0 END),2) AS baseline_sales, COUNT(DISTINCT CASE WHEN (o.order_purchase_timestamp >= '2018-04-01' AND o.order_purchase_timestamp < '2018-05-01') THEN o.order_id END) AS target_orders, ROUND(SUM(CASE WHEN (o.order_purchase_timestamp >= '2018-04-01' AND o.order_purchase_timestamp < '2018-05-01') THEN COALESCE(i.price,0) ELSE 0 END),2) AS target_sales FROM orders o LEFT JOIN order_items i ON o.order_id=i.order_id WHERE (o.order_purchase_timestamp >= '2018-03-01' AND o.order_purchase_timestamp < '2018-04-01') OR (o.order_purchase_timestamp >= '2018-04-01' AND o.order_purchase_timestamp < '2018-05-01')",
+        "columns": [
+          "baseline_orders",
+          "baseline_sales",
+          "target_orders",
+          "target_sales"
+        ],
+        "rows": [
+          [
+            7211,
+            983213.44,
+            6939,
+            996647.75
+          ]
+        ],
+        "query_id": "3c61d29873ed4160b18368a8f39408a1",
+        "elapsed_seconds": 0.062
+      }
+    ],
+    "agent_numeric_correct": true,
+    "agent_citations_present": true,
+    "decomposition_balanced": true,
+    "docker_review_passed": true,
+    "automated_review_seconds": 0.0,
+    "human_review_seconds": null
+  }
+]

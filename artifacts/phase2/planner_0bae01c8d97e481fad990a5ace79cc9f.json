@@ -1,0 +1,113 @@
+{
+  "question": "Explain whether merchandise sales changed mainly because of order volume or average merchandise per order. If sales declined, drill down by category and seller.",
+  "scenario": "2018-07 versus 2018-06",
+  "periods": {
+    "baseline": "2018-06",
+    "target": "2018-07"
+  },
+  "next_task": "finish",
+  "evidence": [
+    {
+      "task": "monthly_drivers",
+      "sql": "SELECT COUNT(DISTINCT CASE WHEN (o.order_purchase_timestamp >= '2018-06-01' AND o.order_purchase_timestamp < '2018-07-01') THEN o.order_id END) AS baseline_orders, ROUND(SUM(CASE WHEN (o.order_purchase_timestamp >= '2018-06-01' AND o.order_purchase_timestamp < '2018-07-01') THEN COALESCE(i.price,0) ELSE 0 END),2) AS baseline_sales, COUNT(DISTINCT CASE WHEN (o.order_purchase_timestamp >= '2018-07-01' AND o.order_purchase_timestamp < '2018-08-01') THEN o.order_id END) AS target_orders, ROUND(SUM(CASE WHEN (o.order_purchase_timestamp >= '2018-07-01' AND o.order_purchase_timestamp < '2018-08-01') THEN COALESCE(i.price,0) ELSE 0 END),2) AS target_sales FROM orders o LEFT JOIN order_items i ON o.order_id=i.order_id WHERE (o.order_purchase_timestamp >= '2018-06-01' AND o.order_purchase_timestamp < '2018-07-01') OR (o.order_purchase_timestamp >= '2018-07-01' AND o.order_purchase_timestamp < '2018-08-01')",
+      "query_id": "d2358c5d55944387a708ddc676cd3453",
+      "columns": [
+        "baseline_orders",
+        "baseline_sales",
+        "target_orders",
+        "target_sales"
+      ],
+      "rows": [
+        [
+          6167,
+          865124.31,
+          6292,
+          895507.22
+        ]
+      ],
+      "elapsed_seconds": 0.156,
+      "attempts": 1
+    }
+  ],
+  "drivers": {
+    "baseline_orders": 6167,
+    "target_orders": 6292,
+    "baseline_sales_brl": "865124.31",
+    "target_sales_brl": "895507.22",
+    "baseline_average_brl": "140.28",
+    "target_average_brl": "142.32",
+    "sales_change_brl": "30382.91",
+    "volume_contribution_brl": "17662.97",
+    "average_contribution_brl": "12719.94"
+  },
+  "decisions": [
+    {
+      "task": "monthly_drivers",
+      "reason": "Need to compare order count and average merchandise per order between 2018-06 and 2018-07 to determine whether volume or per-order amount drove the change."
+    }
+  ],
+  "status": "completed",
+  "report_validation": {
+    "model_fields_match": true,
+    "rejected_fields": []
+  },
+  "answer": "### 2018-07 对比 2018-06\n商品金额**增长**，差额为 **30382.91 BRL**。\n\n| 月份 | 订单量 | 商品金额（BRL） | 每单商品金额（BRL） |\n|---|---:|---:|---:|\n| 2018-06 | 6,167 | 865124.31 | 140.28 |\n| 2018-07 | 6,292 | 895507.22 | 142.32 |\n\n订单量变化贡献 **17662.97 BRL**，每单商品金额变化贡献 **12719.94 BRL**。\n订单量贡献用订单数差乘两期平均每单金额。每单金额贡献为总差额减订单量贡献，包含分币舍入差。\n\n查询证据：`d2358c5d55944387a708ddc676cd3453`\n\n按下单月份统计全部记录状态，商品金额不含运费。一个订单可涉及多个品类或卖家，分组订单量不可相加。变化贡献是算术拆解，数据缺少完整成本和广告投入。",
+  "docker_review": {
+    "drivers": {
+      "baseline_orders": 6167,
+      "target_orders": 6292,
+      "baseline_sales_brl": "865124.31",
+      "target_sales_brl": "895507.22",
+      "baseline_average_brl": "140.28",
+      "target_average_brl": "142.32",
+      "sales_change_brl": "30382.91",
+      "volume_contribution_brl": "17662.97",
+      "average_contribution_brl": "12719.94"
+    },
+    "container_id": "redacted-for-public-release",
+    "image_id": "redacted-for-public-release",
+    "network": "none",
+    "executor": "DeepAnalyze chat_v2",
+    "checks": [
+      {
+        "task": "monthly_drivers",
+        "query_id": "d2358c5d55944387a708ddc676cd3453",
+        "matched": true
+      }
+    ],
+    "passed": true,
+    "drivers_match": true
+  },
+  "usage": [
+    {
+      "completion_tokens": 49,
+      "prompt_tokens": 210,
+      "total_tokens": 259,
+      "completion_tokens_details": null,
+      "prompt_tokens_details": {
+        "audio_tokens": null,
+        "cache_write_tokens": null,
+        "cached_tokens": 0,
+        "image_tokens": null,
+        "text_tokens": null
+      },
+      "prompt_cache_hit_tokens": 0,
+      "prompt_cache_miss_tokens": 210
+    },
+    {
+      "completion_tokens": 103,
+      "prompt_tokens": 177,
+      "total_tokens": 280,
+      "completion_tokens_details": null,
+      "prompt_tokens_details": {
+        "audio_tokens": null,
+        "cache_write_tokens": null,
+        "cached_tokens": 0,
+        "image_tokens": null,
+        "text_tokens": null
+      },
+      "prompt_cache_hit_tokens": 0,
+      "prompt_cache_miss_tokens": 177
+    }
+  ]
+}

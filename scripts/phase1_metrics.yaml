@@ -1,0 +1,21 @@
+order_count:
+  formula: COUNT(DISTINCT orders.order_id)
+  definition: Count orders in the selected purchase period and status population.
+item_sales:
+  formula: SUM(order_items.price)
+  definition: Merchandise value in BRL. Excludes freight and does not measure profit.
+average_order_value:
+  formula: SUM(order_items.price) / COUNT(DISTINCT orders.order_id)
+  definition: Count orders from the same population as the numerator, including orders without items when using a left join.
+freight:
+  formula: SUM(order_items.freight_value)
+  definition: Freight recorded per item in BRL.
+item_count:
+  formula: COUNT(order_items.order_item_id)
+  definition: Count order item rows at order_id and order_item_id grain.
+category_sales:
+  formula: SUM(order_items.price) GROUP BY products.product_category_name
+  definition: Join on product_id and retain unknown categories separately.
+seller_sales:
+  formula: SUM(order_items.price) GROUP BY order_items.seller_id
+  definition: Attribute each item to its seller. Do not multiply sales by joining payments or reviews at order grain.

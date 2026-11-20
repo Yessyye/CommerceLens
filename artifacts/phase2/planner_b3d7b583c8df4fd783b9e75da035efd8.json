@@ -1,0 +1,98 @@
+{
+  "question": "List the five product categories with the greatest all-time item sales.",
+  "scenario": "August 2018 versus July 2018",
+  "next_task": "finish",
+  "evidence": [
+    {
+      "task": "top_categories",
+      "sql": "SELECT p.product_category_name, ROUND(SUM(i.price),2) AS sales_brl FROM order_items i LEFT JOIN products p ON i.product_id=p.product_id GROUP BY p.product_category_name ORDER BY sales_brl DESC LIMIT 5",
+      "columns": [
+        "product_category_name",
+        "sales_brl"
+      ],
+      "rows": [
+        [
+          "beleza_saude",
+          1258681.34
+        ],
+        [
+          "relogios_presentes",
+          1205005.68
+        ],
+        [
+          "cama_mesa_banho",
+          1036988.68
+        ],
+        [
+          "esporte_lazer",
+          988048.97
+        ],
+        [
+          "informatica_acessorios",
+          911954.32
+        ]
+      ],
+      "query_id": "3c29335e132b48be8dffb5627829f04b",
+      "elapsed_seconds": 0.063
+    }
+  ],
+  "decisions": [
+    {
+      "task": "top_categories",
+      "reason": "The question asks for the top five product categories by all-time item sales; the available dataset 'top_categories' directly provides all-time top five categories by merchandise amount."
+    },
+    {
+      "task": "finish",
+      "reason": "The question asks only for the five all-time top product categories by item sales. This has already been answered directly by the top_categories query, which returned exactly five categories. The available jul_aug_change metric (a month-over-month difference) is not needed to answer an all-time ranking question, and no decline investigation was requested. No further queries are required."
+    }
+  ],
+  "status": "completed",
+  "answer": "按商品销售额（BRL）计算，历史累计销量最高的五个产品类别为：\n\n1. **beleza_saude** — 1,258,681.34  \n2. **relogios_presentes** — 1,205,005.68  \n3. **cama_mesa_banho** — 1,036,988.68  \n4. **esporte_lazer** — 988,048.97  \n5. **informatica_acessorios** — 911,954.32  \n\n依据查询 ID：3c29335e132b48be8dffb5627829f04b。",
+  "usage": [
+    {
+      "completion_tokens": 47,
+      "prompt_tokens": 199,
+      "total_tokens": 246,
+      "completion_tokens_details": null,
+      "prompt_tokens_details": {
+        "audio_tokens": null,
+        "cache_write_tokens": null,
+        "cached_tokens": 0,
+        "image_tokens": null,
+        "text_tokens": null
+      },
+      "prompt_cache_hit_tokens": 0,
+      "prompt_cache_miss_tokens": 199
+    },
+    {
+      "completion_tokens": 92,
+      "prompt_tokens": 372,
+      "total_tokens": 464,
+      "completion_tokens_details": null,
+      "prompt_tokens_details": {
+        "audio_tokens": null,
+        "cache_write_tokens": null,
+        "cached_tokens": 0,
+        "image_tokens": null,
+        "text_tokens": null
+      },
+      "prompt_cache_hit_tokens": 0,
+      "prompt_cache_miss_tokens": 372
+    },
+    {
+      "completion_tokens": 134,
+      "prompt_tokens": 418,
+      "total_tokens": 552,
+      "completion_tokens_details": null,
+      "prompt_tokens_details": {
+        "audio_tokens": null,
+        "cache_write_tokens": null,
+        "cached_tokens": 0,
+        "image_tokens": null,
+        "text_tokens": null
+      },
+      "prompt_cache_hit_tokens": 0,
+      "prompt_cache_miss_tokens": 418
+    }
+  ]
+}

@@ -1,0 +1,90 @@
+{
+  "passed": 4,
+  "total": 5,
+  "cases": [
+    {
+      "id": "overview",
+      "expected_path": [
+        "overview"
+      ],
+      "passed": false,
+      "trace": "artifacts\\phase2\\planner_42952277a5b84566941527b51627d4e6.json",
+      "actual_path": [
+        "overview",
+        "jul_aug_change",
+        "category_contributions"
+      ],
+      "numeric_match": true,
+      "citations": true,
+      "tokens": 3180,
+      "model_calls": 5,
+      "elapsed_seconds": 8.75
+    },
+    {
+      "id": "ranking",
+      "expected_path": [
+        "top_categories"
+      ],
+      "passed": true,
+      "trace": "artifacts\\phase2\\planner_b3d7b583c8df4fd783b9e75da035efd8.json",
+      "actual_path": [
+        "top_categories"
+      ],
+      "numeric_match": true,
+      "citations": true,
+      "tokens": 1262,
+      "model_calls": 3,
+      "elapsed_seconds": 5.64
+    },
+    {
+      "id": "comparison_only",
+      "expected_path": [
+        "jul_aug_change"
+      ],
+      "passed": true,
+      "trace": "artifacts\\phase2\\planner_2e00f670a79941c29ab6e903ff155521.json",
+      "actual_path": [
+        "jul_aug_change"
+      ],
+      "numeric_match": true,
+      "citations": true,
+      "tokens": 1149,
+      "model_calls": 3,
+      "elapsed_seconds": 4.78
+    },
+    {
+      "id": "decline",
+      "expected_path": [
+        "jul_aug_change",
+        "category_contributions"
+      ],
+      "passed": true,
+      "trace": "artifacts\\phase2\\planner_29aacd7933574c2b87234d08465a3938.json",
+      "actual_path": [
+        "jul_aug_change",
+        "category_contributions"
+      ],
+      "numeric_match": true,
+      "citations": true,
+      "tokens": 2303,
+      "model_calls": 4,
+      "elapsed_seconds": 6.48
+    },
+    {
+      "id": "growth",
+      "expected_path": [
+        "jul_aug_change"
+      ],
+      "passed": true,
+      "trace": "artifacts\\phase2\\planner_5dd3ef11531341d1bf6b9764f11fbacf.json",
+      "actual_path": [
+        "jul_aug_change"
+      ],
+      "numeric_match": true,
+      "citations": true,
+      "tokens": 1139,
+      "model_calls": 3,
+      "elapsed_seconds": 6.39
+    }
+  ]
+}
