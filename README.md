@@ -1,5 +1,7 @@
 # CommerceLens
 
+**English** · [简体中文](README.zh-CN.md)
+
 An auditable e-commerce analysis Agent with controlled execution and independent evaluation.
 
 CommerceLens answers supported Chinese business questions over the public Olist dataset. It decomposes merchandise-value changes, investigates declining categories and sellers, and connects each report to executed SQL and review evidence.

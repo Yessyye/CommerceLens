@@ -1,5 +1,7 @@
 # Public repository file structure
 
+English README.md and Chinese README.zh-CN.md share the same runtime code and fixtures.
+
 - `.env.example`
 - `.gitignore`
 - `.streamlit/config.toml`
@@ -8,6 +10,7 @@
 - `LICENSE`
 - `PUBLICATION_PREVIEW.md`
 - `README.md`
+- `README.zh-CN.md`
 - `RELEASE_MANIFEST.md`
 - `THIRD_PARTY_NOTICES.md`
 - `artifacts/phase1/query_results.json`

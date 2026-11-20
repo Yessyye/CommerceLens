@@ -100,3 +100,11 @@ This new check validates replay installation only. Historical Golden SQL and Age
 ## Public Git staging revision
 
 Input ZIP checksum and CRC verified before changes. Operational container/image/session/host JSON fields were redacted without changing core code or evaluation algorithms. Fixture sanitization is documented in docs/source_identity.json. release/ is ignored so archives are not committed. Repository initialization is local only; public creation and push require a separate explicit approval. The local gh executable is absent; the GitHub connector identifies Yessyye. The target lookup returned 404 and accessible owner repository list was empty. Remote availability must be rechecked before creation.
+
+## Published repository inspection and bilingual documentation
+
+The public Yessyye/CommerceLens repository was read through the GitHub connector. Its main file tree contains 83 blobs. All 83 match the reviewed local candidate bytes or LF-normalized bytes. README is at repository root and the tree has no raw CSV, DuckDB, environment, cache or distribution archive paths. This is a content comparison, not a new runtime test of a clone.
+
+The upload omitted .gitignore, .env.example and .streamlit/config.toml. Their absence affects ignore protection, live configuration instructions and intended theme. The bilingual update package restores them without altering core code.
+
+README.zh-CN.md now provides Chinese onboarding, workflow, architecture, actual autonomy boundaries, evaluation and licensing. README.md links to the Chinese document. The recommended delivery is one repository with two README languages. No second remote repository or remote documentation change was made during this revision.

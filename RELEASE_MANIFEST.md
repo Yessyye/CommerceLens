@@ -1,12 +1,12 @@
 # Release manifest
 
-Status **READY WITH WARNINGS — awaiting publication approval**.
+Bilingual documentation revision. Status READY WITH WARNINGS. Upload is manual.
 
-Copyright attribution Yessyye. Source MIT; third-party code and Olist-derived data follow their separate notices. Twelve public fixture files contain redacted operational identifiers. Core code unchanged.
+Includes README.md and README.zh-CN.md plus the original runtime code. Remote inspection found 83 matching blobs and three omitted dotfile paths. This package includes those missing files. No core code change or new runtime result is claimed.
 
-Fresh offline validation is recorded in docs/fresh_replay_validation.json. Live API/Docker tests and screenshots remain pending. release/ archives and .git internals are excluded from repository payload.
+Source MIT, copyright Yessyye. Vendor and data terms are separately documented. Live API/Docker verification and screenshots remain pending.
 
-SHA-256 covers all files except this manifest itself.
+Payload excludes .git and release/. SHA-256 covers all payload files except this manifest itself.
 
 | File | Bytes | SHA-256 |
 |---|---:|---|
@@ -14,10 +14,11 @@ SHA-256 covers all files except this manifest itself.
 | .gitignore | 2399 | 2b11be18bbf93c4f6e51154e779eee716d32f0e95b1ffe364d456ccfd76203fc |
 | .streamlit/config.toml | 192 | 333ec0933e99f850b7e5ea624d15d3c87680e94421936d828a66da6313d3835f |
 | DATA_LICENSE.md | 2372 | ecd264506e6a567b4b1a0d5b38344a596e31b3df3f68202a459f48f32426170c |
-| GITHUB_RELEASE_AUDIT.md | 10789 | 13ffd9371c9be8484f30a876391136f84ac4017cfabb3f93225d5147b342768d |
+| GITHUB_RELEASE_AUDIT.md | 11801 | 9ce4b9ed89e455666d8c74e17cf17d4c1fddfeff53f8cb62d7e0366b3f5fb3df |
 | LICENSE | 1313 | b35cea8e98cecad8067615eff9039395d3c639db5d357f172e5fd47fc8e8dcd1 |
 | PUBLICATION_PREVIEW.md | 4932 | cff8abd17c8d7434cb5e292276214993c53c7ec8ef574d61d8aa6ad1c544bb88 |
-| README.md | 8546 | 3957856d2f3c03c9e29d72dba60002dd6c18d275ae66d21faa31103668ea7a22 |
+| README.md | 8596 | 81cf2c4a8706449a1bab1c8cbcaa160f21ad7091fc0384c189dedbe8224b7a3d |
+| README.zh-CN.md | 8163 | b28152ce75eb29339f4664e78334b307cbd8a482bb6f52ab0dc8010b8cbaa6af |
 | THIRD_PARTY_NOTICES.md | 2917 | 2ccb825484f9af937293bb0d572b16ebf47046456306264c16936d7ae3114b1d |
 | artifacts/phase1/query_results.json | 3783 | 4ad6f106fe531e97da79b345afed4154276ac90cb4654bbe05c37bff02d50815 |
 | artifacts/phase2/planner_0bae01c8d97e481fad990a5ace79cc9f.json | 4856 | df78d079a3baeec1f55873d807423adc0ced817b1a784b1e4a7df9b2a9f77653 |
@@ -68,7 +69,7 @@ SHA-256 covers all files except this manifest itself.
 | docs/evaluation.md | 1940 | 69d820ef8c9d6b9abdc20cb0256e6965b7a4fd114cd3033fd71768e772f662dc |
 | docs/fresh_replay_validation.json | 3270 | 8c27ce9699584eada5e5178664169c1b0d7d037dc17b41b97b8ba83cfc07a72e |
 | docs/implementation_map.md | 31367 | b2bba7117535bb6af9aa1d32b8d101a0cd920b4f12f1805f57ce5b73fc85d8c4 |
-| docs/project_structure.md | 3839 | 8e85b6446acd5932bb932f32d6be7349d219d47a77073c4a32d24d3a68ee976a |
+| docs/project_structure.md | 3951 | 5a86fd97c4dfd8414511f20c46c0dca140013d405e5677a95f93d5fccbc4c03d |
 | docs/source_identity.json | 3739 | 25229901299afb37e9e86786b224eb5bde81709f84b411a74503471ce05b7477 |
 | docs/technical_design.md | 1445 | 47b64965485a439274fc1a17b4a925f51f9eb0e79c71743e5375970de556e1b4 |
 | requirements-demo.txt | 55 | 1f0a7153f0dbe868c9b273067e01b63dc1ee578775d18a5ed396cf7947ee3c9d |
